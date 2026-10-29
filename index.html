@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Operación Productos Notables</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: consola de misión — barra de estado fija arriba, ruta de 7 nodos, teoría a la izquierda y reto a la derecha (una columna en móvil). Look único oscuro, deliberado. */
+:root{
+  --bg:#0a1324; --panel:#101c33; --panel2:#15233f; --line:#243759;
+  --fg:#e7edf8; --muted:#93a3c4; --accent:#f3b445; --accent-ink:#1a1204;
+  --cyan:#62d3e8; --ok:#43d08f; --bad:#ff7070;
+  --f-display:"Chakra Petch", "Trebuchet MS", sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "Courier New", monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--f-body);font-size:16px;line-height:1.55;min-height:100%;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:44px 44px;background-position:-1px -1px;background-attachment:fixed}
+body::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,transparent 0%,var(--bg) 70%);pointer-events:none;z-index:-1}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:.01em}
+.mono{font-family:var(--f-mono)}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Barra superior */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--panel);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:10px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.stat{display:flex;flex-direction:column;line-height:1.15}
+.stat b{font-family:var(--f-mono);font-size:20px;font-variant-numeric:tabular-nums;color:var(--accent)}
+.stat span{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:var(--f-mono)}
+.spacer{flex:1}
+.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:6px 12px;font-size:13px}
+.ghost:hover{color:var(--fg);border-color:var(--muted)}
+
+/* Ruta de nodos */
+.route{display:flex;gap:6px;padding-block:18px 6px;overflow-x:auto}
+.node{flex:1 0 118px;min-width:118px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;text-align:left;color:var(--muted);position:relative}
+.node .n{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em}
+.node .t{display:block;font-family:var(--f-display);font-size:14px;font-weight:600;line-height:1.2;margin-top:2px}
+.node .st{font-family:var(--f-mono);font-size:11px;margin-top:6px;display:block}
+.node.locked{opacity:.5;cursor:not-allowed}
+.node.open{color:var(--fg);border-color:var(--accent)}
+.node.done{color:var(--fg);border-color:var(--ok)}
+.node.done .st{color:var(--ok)}
+.node.open .st{color:var(--accent)}
+.node.current{background:var(--panel2);box-shadow:inset 0 -3px 0 var(--accent)}
+
+/* Panel principal */
+main{padding-block:14px 48px}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:22px}
+.lvl-head{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.lvl-head h2{font-size:28px;line-height:1.15}
+.mission{color:var(--muted);font-size:15px;max-width:62ch}
+.formula{font-family:var(--f-mono);font-size:clamp(18px,3.4vw,24px);font-weight:600;background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:14px 16px;margin:16px 0;overflow-x:auto;white-space:nowrap}
+.sec{margin-top:20px}
+.sec h3{font-size:16px;color:var(--accent);margin-bottom:6px;font-weight:600}
+.sec p{margin:0 0 8px;max-width:65ch}
+.sec ul{margin:0;padding-left:20px}
+.sec li{margin-bottom:4px}
+.m{font-family:var(--f-mono);white-space:nowrap}
+.steps{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:baseline;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+.steps li::before{content:counter(s);font-family:var(--f-mono);font-size:12px;color:var(--cyan)}
+.steps li .m{white-space:normal}
+.warn{background:rgba(255,112,112,.08);border:1px solid rgba(255,112,112,.35);border-radius:6px;padding:10px 14px}
+.warn b{color:var(--bad)}
+.geo{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.geo svg{max-width:100%;height:auto}
+
+/* Reto */
+.challenge{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+@media (max-width:860px){.challenge{position:static}}
+.qbar{display:flex;gap:6px;margin:10px 0 16px}
+.qbar i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.qbar i.ok{background:var(--ok)}
+.qbar i.now{background:var(--accent)}
+.qtext{font-size:17px;font-weight:500;margin:0 0 14px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--fg);text-align:left;font-family:var(--f-mono);font-size:16px;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--cyan)}
+.opt .k{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 7px;flex:none}
+.opt.wrong{border-color:var(--bad);background:rgba(255,112,112,.08);opacity:.75}
+.opt.right{border-color:var(--ok);background:rgba(67,208,143,.1)}
+.opt:disabled{cursor:default}
+.feedback{margin-top:14px;border-radius:8px;padding:12px 14px;font-size:15px}
+.feedback.ok{background:rgba(67,208,143,.1);border:1px solid rgba(67,208,143,.4)}
+.feedback.bad{background:rgba(255,112,112,.08);border:1px solid rgba(255,112,112,.35)}
+.feedback.hint{background:rgba(98,211,232,.08);border:1px solid rgba(98,211,232,.35)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:7px;padding:11px 18px;font-weight:600;font-family:var(--f-display);font-size:15px;letter-spacing:.02em}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec2{background:transparent;color:var(--cyan);border:1px solid var(--cyan)}
+.pts-note{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-top:14px}
+.done-box{text-align:center;padding:10px 0}
+.done-box .big{font-family:var(--f-mono);font-size:38px;color:var(--ok);font-weight:600;font-variant-numeric:tabular-nums}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--accent);color:var(--fg);padding:10px 18px;border-radius:8px;font-family:var(--f-mono);font-size:14px;opacity:0;transition:.25s;z-index:20;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Pantalla de inicio y final */
+.screen{max-width:640px;margin:7vh auto 40px}
+.screen h1{font-size:clamp(30px,6vw,46px);line-height:1.05;margin:10px 0 12px}
+.screen p{color:var(--muted);max-width:60ch}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:20px}
+.field label{font-size:13px;color:var(--muted);font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase}
+.field input,.field select{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:7px;padding:11px 12px;font-size:16px;font-family:var(--f-body);width:100%}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:22px}
+.rules div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px}
+.rules b{display:block;font-family:var(--f-mono);color:var(--accent);font-size:18px}
+.cert{border:1px solid var(--ok);border-radius:12px;padding:26px;background:var(--panel);text-align:center}
+.cert .score{font-family:var(--f-mono);font-size:56px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
+.cert table{margin:18px auto 0;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.cert td{padding:4px 12px;border-bottom:1px solid var(--line);text-align:left}
+.cert td:last-child{text-align:right;font-family:var(--f-mono)}
+.code{display:inline-block;margin-top:16px;font-family:var(--f-mono);font-size:22px;letter-spacing:.18em;border:1px dashed var(--accent);padding:8px 16px;border-radius:6px}
+.confirm{margin-top:12px;background:var(--bg);border:1px solid var(--bad);border-radius:8px;padding:12px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding-block:10px 24px;font-family:var(--f-mono)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const LEVELS = [
+{
+  code:"NODO 01", title:"Cuadrado de una suma", short:"(a + b)²",
+  mission:"El firewall perimetral cifra su clave de acceso como el área de un cuadrado. Para cruzarlo, el equipo debe dominar el cuadrado de un binomio suma.",
+  formula:"(a + b)² = a² + 2ab + b²",
+  read:"El cuadrado del primero, más el doble del primero por el segundo, más el cuadrado del segundo.",
+  derive:["(a + b)² = (a + b)(a + b)","= a·a + a·b + b·a + b·b  (propiedad distributiva)","= a² + ab + ab + b²","= a² + 2ab + b²"],
+  geo:true,
+  recognize:["Un binomio con signo + elevado al exponente 2.","El resultado siempre tiene <b>tres términos</b>: un trinomio cuadrado perfecto.","Los términos de los extremos son cuadrados y siempre positivos."],
+  example:{expr:"(3x + 5)²",steps:["Cuadrado del primero: <span class='m'>(3x)² = 9x²</span>","Doble del primero por el segundo: <span class='m'>2(3x)(5) = 30x</span>","Cuadrado del segundo: <span class='m'>5² = 25</span>","Resultado: <span class='m'>9x² + 30x + 25</span>"]},
+  error:"<b>Error frecuente:</b> escribir <span class='m'>(a + b)² = a² + b²</span>. Falta el término central <span class='m'>2ab</span>. Prueba con a = 3, b = 4: (7)² = 49, pero 9 + 16 = 25.",
+  questions:[
+    {q:"Desarrolla (x + 7)²",o:["x² + 14x + 49","x² + 49","x² + 7x + 49","x² + 14x + 14"],h:"El término central es 2·x·7.",w:"x² + 2(x)(7) + 7² = x² + 14x + 49."},
+    {q:"Desarrolla (2a + 3b)²",o:["4a² + 12ab + 9b²","4a² + 6ab + 9b²","2a² + 12ab + 3b²","4a² + 9b²"],h:"Eleva al cuadrado el coeficiente y la variable: (2a)² = 4a².",w:"(2a)² + 2(2a)(3b) + (3b)² = 4a² + 12ab + 9b²."},
+    {q:"Desarrolla (5m² + 1)²",o:["25m⁴ + 10m² + 1","25m⁴ + 5m² + 1","10m⁴ + 10m² + 1","25m² + 10m + 1"],h:"(m²)² = m⁴: los exponentes se multiplican.",w:"(5m²)² + 2(5m²)(1) + 1² = 25m⁴ + 10m² + 1."},
+    {q:"Una sala de servidores cuadrada mide (x + 4) metros de lado. ¿Qué expresión da su área?",o:["x² + 8x + 16","x² + 16","x² + 4x + 16","2x + 8"],h:"Área de un cuadrado = lado².",w:"(x + 4)² = x² + 2(x)(4) + 16 = x² + 8x + 16 m²."}
+  ]
+},
+{
+  code:"NODO 02", title:"Cuadrado de una diferencia", short:"(a − b)²",
+  mission:"El sistema de detección de intrusos resta capas de protección. Para desactivarlo hay que controlar el signo negativo sin perder el término central.",
+  formula:"(a − b)² = a² − 2ab + b²",
+  read:"El cuadrado del primero, menos el doble del primero por el segundo, más el cuadrado del segundo.",
+  derive:["(a − b)² = (a − b)(a − b)","= a·a − a·b − b·a + b·b","= a² − ab − ab + b²","= a² − 2ab + b²"],
+  recognize:["Un binomio con signo − elevado al exponente 2.","Solo el término central es negativo.","El último término es <b>positivo</b>, porque (−b)² = b²."],
+  example:{expr:"(4y − 3)²",steps:["Cuadrado del primero: <span class='m'>(4y)² = 16y²</span>","Doble del primero por el segundo, con signo −: <span class='m'>−2(4y)(3) = −24y</span>","Cuadrado del segundo: <span class='m'>3² = 9</span>","Resultado: <span class='m'>16y² − 24y + 9</span>"]},
+  error:"<b>Error frecuente:</b> poner el último término negativo, <span class='m'>a² − 2ab − b²</span>. Un número al cuadrado nunca es negativo.",
+  questions:[
+    {q:"Desarrolla (x − 6)²",o:["x² − 12x + 36","x² − 36","x² − 12x − 36","x² + 12x + 36"],h:"El último término es (−6)², que es positivo.",w:"x² − 2(x)(6) + 36 = x² − 12x + 36."},
+    {q:"Desarrolla (3p − 2q)²",o:["9p² − 12pq + 4q²","9p² − 6pq + 4q²","9p² − 12pq − 4q²","9p² + 4q²"],h:"Término central: 2·(3p)·(2q).",w:"(3p)² − 2(3p)(2q) + (2q)² = 9p² − 12pq + 4q²."},
+    {q:"Desarrolla (½x − 4)²",o:["¼x² − 4x + 16","¼x² − 2x + 16","½x² − 4x + 16","¼x² − 8x + 16"],h:"2 · ½x · 4 = 4x.",w:"(½x)² − 2(½x)(4) + 16 = ¼x² − 4x + 16."},
+    {q:"Cálculo mental: usa (100 − 1)² para hallar 99²",o:["9801","9800","9899","9701"],h:"100² − 2(100)(1) + 1².",w:"10 000 − 200 + 1 = 9801."}
+  ]
+},
+{
+  code:"NODO 03", title:"Cubo de una suma", short:"(a + b)³",
+  mission:"El servidor de respaldo guarda los datos en un volumen cúbico. Calcular su capacidad exige desarrollar el cubo de un binomio suma.",
+  formula:"(a + b)³ = a³ + 3a²b + 3ab² + b³",
+  read:"El cubo del primero, más el triple del cuadrado del primero por el segundo, más el triple del primero por el cuadrado del segundo, más el cubo del segundo.",
+  derive:["(a + b)³ = (a + b)²(a + b)","= (a² + 2ab + b²)(a + b)","= a³ + a²b + 2a²b + 2ab² + ab² + b³","= a³ + 3a²b + 3ab² + b³"],
+  recognize:["Un binomio con signo + elevado al exponente 3.","El resultado tiene <b>cuatro términos</b> con coeficientes 1, 3, 3, 1.","Los exponentes de a bajan (3, 2, 1, 0) mientras los de b suben (0, 1, 2, 3)."],
+  example:{expr:"(x + 2)³",steps:["Cubo del primero: <span class='m'>x³</span>","Triple del cuadrado del primero por el segundo: <span class='m'>3(x²)(2) = 6x²</span>","Triple del primero por el cuadrado del segundo: <span class='m'>3(x)(4) = 12x</span>","Cubo del segundo: <span class='m'>2³ = 8</span>","Resultado: <span class='m'>x³ + 6x² + 12x + 8</span>"]},
+  error:"<b>Error frecuente:</b> escribir <span class='m'>(a + b)³ = a³ + b³</span>. Faltan los dos términos centrales. Con a = 1, b = 1: 2³ = 8, pero 1 + 1 = 2.",
+  questions:[
+    {q:"Desarrolla (x + 3)³",o:["x³ + 9x² + 27x + 27","x³ + 27","x³ + 3x² + 3x + 27","x³ + 9x² + 9x + 27"],h:"3·x²·3 = 9x² y 3·x·3² = 27x.",w:"x³ + 3(x²)(3) + 3(x)(9) + 27 = x³ + 9x² + 27x + 27."},
+    {q:"Desarrolla (2y + 1)³",o:["8y³ + 12y² + 6y + 1","8y³ + 6y² + 6y + 1","2y³ + 6y² + 6y + 1","8y³ + 1"],h:"(2y)³ = 8y³ y (2y)² = 4y².",w:"8y³ + 3(4y²)(1) + 3(2y)(1) + 1 = 8y³ + 12y² + 6y + 1."},
+    {q:"En el desarrollo de (a + 2b)³, ¿cuál es el coeficiente del término ab²?",o:["12","6","4","8"],h:"El término es 3·a·(2b)².",w:"3 · a · 4b² = 12ab²."},
+    {q:"Un rack cúbico tiene arista (x + 1) dm. ¿Qué expresión da su volumen?",o:["x³ + 3x² + 3x + 1","x³ + 1","x³ + 3x + 1","3x³ + 3x² + 1"],h:"Volumen de un cubo = arista³.",w:"(x + 1)³ = x³ + 3x² + 3x + 1 dm³."}
+  ]
+},
+{
+  code:"NODO 04", title:"Cubo de una diferencia", short:"(a − b)³",
+  mission:"El registro de auditoría alterna permisos: concedido, denegado, concedido, denegado. Ese patrón de signos es la llave del cubo de una diferencia.",
+  formula:"(a − b)³ = a³ − 3a²b + 3ab² − b³",
+  read:"El cubo del primero, menos el triple del cuadrado del primero por el segundo, más el triple del primero por el cuadrado del segundo, menos el cubo del segundo.",
+  derive:["(a − b)³ = (a − b)²(a − b)","= (a² − 2ab + b²)(a − b)","= a³ − a²b − 2a²b + 2ab² + ab² − b³","= a³ − 3a²b + 3ab² − b³"],
+  recognize:["Un binomio con signo − elevado al exponente 3.","Los signos se <b>alternan</b>: + − + −.","Los coeficientes siguen siendo 1, 3, 3, 1."],
+  example:{expr:"(x − 2)³",steps:["Cubo del primero: <span class='m'>x³</span>","Menos el triple: <span class='m'>−3(x²)(2) = −6x²</span>","Más el triple: <span class='m'>+3(x)(4) = +12x</span>","Menos el cubo del segundo: <span class='m'>−8</span>","Resultado: <span class='m'>x³ − 6x² + 12x − 8</span>"]},
+  error:"<b>Error frecuente:</b> poner todos los términos centrales negativos. El tercer término es positivo porque contiene b², y (−b)² es positivo.",
+  questions:[
+    {q:"Desarrolla (x − 4)³",o:["x³ − 12x² + 48x − 64","x³ − 64","x³ − 12x² − 48x − 64","x³ + 12x² + 48x + 64"],h:"Signos alternados: + − + −.",w:"x³ − 3(x²)(4) + 3(x)(16) − 64 = x³ − 12x² + 48x − 64."},
+    {q:"Desarrolla (3m − 1)³",o:["27m³ − 27m² + 9m − 1","27m³ − 9m² + 9m − 1","27m³ − 27m² + 9m + 1","9m³ − 27m² + 9m − 1"],h:"3·(3m)²·1 = 3·9m² = 27m².",w:"27m³ − 3(9m²)(1) + 3(3m)(1) − 1 = 27m³ − 27m² + 9m − 1."},
+    {q:"¿Cuál es el patrón de signos en el desarrollo de (a − b)³?",o:["+  −  +  −","+  −  −  −","−  +  −  +","+  +  −  −"],h:"Los términos con potencia impar de b llevan signo −.",w:"a³ (+), −3a²b (−), +3ab² (+), −b³ (−)."},
+    {q:"Cálculo mental: usa (20 − 1)³ para hallar 19³",o:["6859","6861","7999","6841"],h:"8000 − 3(400)(1) + 3(20)(1) − 1.",w:"8000 − 1200 + 60 − 1 = 6859."}
+  ]
+},
+{
+  code:"NODO 05", title:"Suma de cubos", short:"a³ + b³",
+  mission:"Dos llaves cúbicas se combinan en un único cifrado. Para separarlas, hay que reconocer la suma de cubos y su producto equivalente.",
+  formula:"(a + b)(a² − ab + b²) = a³ + b³",
+  read:"La suma de las bases, por el cuadrado de la primera, menos el producto de ambas, más el cuadrado de la segunda, da la suma de sus cubos.",
+  derive:["(a + b)(a² − ab + b²)","= a³ − a²b + ab² + a²b − ab² + b³","Los términos a²b y ab² se cancelan","= a³ + b³"],
+  recognize:["Dos términos que son <b>cubos perfectos</b> unidos por +.","Las bases son las raíces cúbicas: ∛(8x³) = 2x, ∛27 = 3.","En el trinomio, el término central lleva signo <b>opuesto</b> al del binomio y el último siempre es positivo."],
+  example:{expr:"27y³ + 1",steps:["Raíces cúbicas: <span class='m'>∛27y³ = 3y</span> y <span class='m'>∛1 = 1</span>","Binomio: <span class='m'>(3y + 1)</span>","Trinomio: <span class='m'>(3y)² − (3y)(1) + 1² = 9y² − 3y + 1</span>","Resultado: <span class='m'>27y³ + 1 = (3y + 1)(9y² − 3y + 1)</span>"]},
+  error:"<b>Error frecuente:</b> confundir el trinomio con un cuadrado perfecto y escribir −2ab. El término central es solo <span class='m'>−ab</span>.",
+  questions:[
+    {q:"Multiplica (x + 3)(x² − 3x + 9)",o:["x³ + 27","x³ + 9","x³ − 27","x³ + 3x² + 9"],h:"Es el patrón (a + b)(a² − ab + b²) con a = x, b = 3.",w:"a³ + b³ = x³ + 3³ = x³ + 27."},
+    {q:"Factoriza x³ + 125",o:["(x + 5)(x² − 5x + 25)","(x + 5)(x² + 5x + 25)","(x + 5)³","(x − 5)(x² + 5x + 25)"],h:"∛125 = 5. El término central del trinomio lleva signo opuesto.",w:"a = x, b = 5: (x + 5)(x² − 5x + 25)."},
+    {q:"Factoriza 8a³ + 27b³",o:["(2a + 3b)(4a² − 6ab + 9b²)","(2a + 3b)(4a² + 6ab + 9b²)","(2a + 3b)(4a² − 6ab − 9b²)","(8a + 27b)(a² − ab + b²)"],h:"Las bases son 2a y 3b.",w:"(2a + 3b)[(2a)² − (2a)(3b) + (3b)²] = (2a + 3b)(4a² − 6ab + 9b²)."},
+    {q:"Completa el término que falta: (m + 4)(m² − ___ + 16) = m³ + 64",o:["4m","8m","16m","m"],h:"El término central es a·b.",w:"a·b = m · 4 = 4m."}
+  ]
+},
+{
+  code:"NODO 06", title:"Diferencia de cubos", short:"a³ − b³",
+  mission:"El atacante dejó una firma restando dos volúmenes. Rastrearla exige descomponer una diferencia de cubos en su producto.",
+  formula:"(a − b)(a² + ab + b²) = a³ − b³",
+  read:"La diferencia de las bases, por el cuadrado de la primera, más el producto de ambas, más el cuadrado de la segunda, da la diferencia de sus cubos.",
+  derive:["(a − b)(a² + ab + b²)","= a³ + a²b + ab² − a²b − ab² − b³","Los términos a²b y ab² se cancelan","= a³ − b³"],
+  recognize:["Dos cubos perfectos unidos por −.","Regla de signos <b>MOS</b>: el binomio lleva el <b>M</b>ismo signo, el término central el <b>O</b>puesto y el último <b>S</b>iempre positivo.","Compara con la suma de cubos: solo cambian los signos."],
+  example:{expr:"x³ − 8",steps:["Raíces cúbicas: <span class='m'>∛x³ = x</span> y <span class='m'>∛8 = 2</span>","Binomio con el mismo signo: <span class='m'>(x − 2)</span>","Trinomio: <span class='m'>x² + 2x + 4</span>","Resultado: <span class='m'>x³ − 8 = (x − 2)(x² + 2x + 4)</span>"]},
+  error:"<b>Error frecuente:</b> escribir <span class='m'>a³ − b³ = (a − b)³</span>. El cubo de una diferencia tiene cuatro términos; la diferencia de cubos solo dos.",
+  questions:[
+    {q:"Multiplica (x − 2)(x² + 2x + 4)",o:["x³ − 8","x³ + 8","x³ − 4x + 8","x³ − 6x² + 12x − 8"],h:"Patrón (a − b)(a² + ab + b²) con a = x, b = 2.",w:"a³ − b³ = x³ − 8."},
+    {q:"Factoriza y³ − 64",o:["(y − 4)(y² + 4y + 16)","(y − 4)(y² − 4y + 16)","(y + 4)(y² − 4y + 16)","(y − 4)³"],h:"∛64 = 4. Aplica la regla MOS.",w:"(y − 4)(y² + 4y + 16)."},
+    {q:"Factoriza 125m³ − 1",o:["(5m − 1)(25m² + 5m + 1)","(5m − 1)(25m² − 5m + 1)","(5m + 1)(25m² + 5m + 1)","(25m − 1)(5m² + m + 1)"],h:"La base de 125m³ es 5m.",w:"(5m − 1)[(5m)² + (5m)(1) + 1] = (5m − 1)(25m² + 5m + 1)."},
+    {q:"Según la regla MOS, ¿qué signo lleva el último término del trinomio en una diferencia de cubos?",o:["Siempre positivo","Siempre negativo","El mismo del binomio","Depende de la base"],h:"La S de MOS.",w:"El último término es b², que siempre es positivo."}
+  ]
+},
+{
+  code:"NODO 07", title:"Binomios conjugados", short:"(a + b)(a − b)",
+  mission:"El núcleo del sistema está protegido por dos binomios espejo. Al multiplicarlos, los términos centrales se anulan y queda expuesta la clave final.",
+  formula:"(a + b)(a − b) = a² − b²",
+  read:"El cuadrado del primero menos el cuadrado del segundo: una diferencia de cuadrados.",
+  derive:["(a + b)(a − b)","= a² − ab + ab − b²","Los términos −ab y +ab se cancelan","= a² − b²"],
+  recognize:["Dos binomios con los <b>mismos términos</b> y signos opuestos.","El resultado tiene solo <b>dos términos</b> y siempre es una resta.","Al factorizar: dos cuadrados perfectos separados por −."],
+  example:{expr:"(3a + 5b)(3a − 5b)",steps:["Cuadrado del primero: <span class='m'>(3a)² = 9a²</span>","Cuadrado del segundo: <span class='m'>(5b)² = 25b²</span>","Resultado: <span class='m'>9a² − 25b²</span>"]},
+  error:"<b>Error frecuente:</b> intentar factorizar <span class='m'>a² + b²</span> como binomios conjugados. Una suma de cuadrados no se factoriza en los números reales.",
+  questions:[
+    {q:"Multiplica (x + 9)(x − 9)",o:["x² − 81","x² + 81","x² − 18x − 81","x² − 9"],h:"Cuadrado del primero menos cuadrado del segundo.",w:"x² − 9² = x² − 81."},
+    {q:"Multiplica (4a + 5b)(4a − 5b)",o:["16a² − 25b²","16a² + 25b²","16a² − 40ab − 25b²","4a² − 5b²"],h:"(4a)² = 16a².",w:"(4a)² − (5b)² = 16a² − 25b²."},
+    {q:"Factoriza 49m² − 16",o:["(7m + 4)(7m − 4)","(7m − 4)²","(49m + 16)(m − 1)","(7m + 16)(7m − 1)"],h:"√49m² = 7m y √16 = 4.",w:"49m² − 16 = (7m)² − 4² = (7m + 4)(7m − 4)."},
+    {q:"Cálculo mental: usa (50 + 1)(50 − 1) para hallar 51 × 49",o:["2499","2500","2501","2449"],h:"50² − 1².",w:"2500 − 1 = 2499."}
+  ]
+}
+];
+
+const PTS = [100, 60, 30];       // por pregunta según intento
+const HINT_COST = 20;
+const CLEAN_BONUS = 100;         // nivel sin errores ni pistas
+const MAX = LEVELS.length * (4*PTS[0] + CLEAN_BONUS);
+const KEY = "opnotables.v1";
+
+let S = load() || fresh();
+let view = { lvl: firstOpen(), selected: null, msg: null, confirmReset: false };
+
+function fresh(){ return { team:"", started:null, finished:null, levels: LEVELS.map(()=>({q:0, tries:0, hint:false, pts:0, errors:0, hints:0, done:false})) }; }
+function load(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} sync(); }
+
+// Envío del avance al panel del docente (Netlify Function). Si no existe, la actividad sigue funcionando.
+const API = "/api/progreso";
+function sync(){
+  if(!S.teamId) return;
+  const cur = S.levels.findIndex(l=>!l.done);
+  const body = {
+    id:S.teamId, equipo:S.team, total:total(), max:MAX,
+    nodoActual: cur<0 ? LEVELS.length : cur+1,
+    nodos:S.levels.map(l=>({pts:l.pts, done:l.done, q:l.q, errors:l.errors, hints:l.hints})),
+    started:S.started, finished:S.finished, codigo: S.levels.every(l=>l.done) ? vcode() : null
+  };
+  try{ fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),keepalive:true}).catch(()=>{}); }catch(e){}
+}
+function total(){ return S.levels.reduce((a,l)=>a+l.pts,0); }
+function unlocked(i){ return i===0 || S.levels[i-1].done; }
+function firstOpen(){ const i = S.levels.findIndex(l=>!l.done); return i<0 ? LEVELS.length-1 : i; }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function toast(t){ const el=document.getElementById("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove("show"),2200); }
+function shuffleFor(lvl,q){ // orden estable por pregunta, distinto entre preguntas
+  const n = LEVELS[lvl].questions[q].o.length, idx=[...Array(n).keys()];
+  let seed = (lvl+1)*31 + (q+1)*17 + (S.team.length*7);
+  for(let i=n-1;i>0;i--){ seed=(seed*9301+49297)%233280; const j=Math.floor(seed/233280*(i+1)); [idx[i],idx[j]]=[idx[j],idx[i]]; }
+  return idx;
+}
+function vcode(){
+  const str = S.team+"|"+total()+"|"+S.levels.map(l=>l.pts+":"+l.errors+":"+l.hints).join(",");
+  let h=2166136261; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); }
+  return "PN-" + (h>>>0).toString(16).toUpperCase().padStart(8,"0").slice(0,6);
+}
+function fmtDur(ms){ const m=Math.round(ms/60000); return m<60 ? m+" min" : Math.floor(m/60)+" h "+(m%60)+" min"; }
+
+function render(){
+  const app = document.getElementById("app");
+  if(!S.team){ app.innerHTML = startScreen(); bindStart(); return; }
+  if(S.levels.every(l=>l.done) && view.lvl==="final"){ app.innerHTML = topbar()+finalScreen(); bindTop(); return; }
+  app.innerHTML = topbar() + `<div class="wrap">${route()}</div><main class="wrap">${levelView(view.lvl)}</main>` + footer();
+  bindTop(); bindLevel();
+}
+
+function startScreen(){
+  return `<div class="wrap"><section class="screen">
+    <div class="eyebrow">Razonamiento Matemático · Álgebra aplicada a la ciberseguridad</div>
+    <h1>Operación Productos Notables</h1>
+    <p>Siete nodos protegen el sistema. Cada nodo es un producto notable: estudien la teoría, resuelvan el reto y desbloqueen el siguiente. Gana el equipo con más puntos acumulados.</p>
+    <form id="startForm">
+      <div class="field"><label for="teamNum">Equipo</label>
+        <select id="teamNum" required><option value="">Seleccionen su equipo</option>${[1,2,3,4,5,6,7].map(n=>`<option value="${n}">Equipo ${n}</option>`).join("")}</select></div>
+      <div class="field"><label for="team">Nombre clave del equipo (opcional)</label>
+        <input id="team" maxlength="30" placeholder="Ej.: Los Cifradores" autocomplete="off"></div>
+      <div class="actions"><button class="btn" type="submit">Iniciar misión</button></div>
+    </form>
+    <div class="rules">
+      <div><b>+100</b>Respuesta correcta al primer intento</div>
+      <div><b>+60 / +30</b>Correcta al segundo o tercer intento en adelante</div>
+      <div><b>−20</b>Por cada pista solicitada</div>
+      <div><b>+100</b>Bonificación por nodo limpio, sin errores ni pistas</div>
+    </div>
+    <p style="margin-top:18px;font-size:14px">Cada nodo tiene 4 preguntas. El siguiente nodo se habilita al responder correctamente las 4. Puntaje máximo: <span class="mono">${MAX}</span>.</p>
+  </section></div>${footer()}`;
+}
+function bindStart(){
+  document.getElementById("startForm").addEventListener("submit",e=>{
+    e.preventDefault(); const n=document.getElementById("teamNum").value; if(!n) return;
+    const alias=document.getElementById("team").value.trim();
+    S.teamId="equipo-"+n; S.alias=alias; S.team="Equipo "+n+(alias?" · "+alias:""); S.started=Date.now(); save(); view.lvl=0; render(); toast("Misión iniciada. Nodo 01 habilitado.");
+  });
+}
+
+function topbar(){
+  const done = S.levels.filter(l=>l.done).length;
+  return `<header class="topbar"><div class="wrap">
+    <div class="brand"><span class="dot"></span>Operación Productos Notables</div>
+    <div class="spacer"></div>
+    <div class="stat"><span>Equipo</span><strong style="font-family:var(--f-display);font-size:15px">${esc(S.team)}</strong></div>
+    <div class="stat"><span>Nodos</span><b>${done}/${LEVELS.length}</b></div>
+    <div class="stat"><span>Puntos</span><b id="scoreVal">${total()}</b></div>
+    <button class="ghost" id="resetBtn" type="button">Reiniciar</button>
+  </div>${view.confirmReset ? `<div class="wrap"><div class="confirm">Se borrará el progreso de <b>${esc(S.team)}</b> en este dispositivo.
+    <div class="actions" style="margin-top:10px"><button class="btn" id="resetYes" type="button" style="background:var(--bad)">Borrar progreso</button><button class="btn sec2" id="resetNo" type="button">Cancelar</button></div></div></div>`:""}</header>`;
+}
+function bindTop(){
+  const r=document.getElementById("resetBtn"); if(r) r.onclick=()=>{ view.confirmReset=!view.confirmReset; render(); };
+  const y=document.getElementById("resetYes"); if(y) y.onclick=()=>{ S=fresh(); save(); view={lvl:0,selected:null,msg:null,confirmReset:false}; render(); };
+  const n=document.getElementById("resetNo"); if(n) n.onclick=()=>{ view.confirmReset=false; render(); };
+  document.querySelectorAll("[data-node]").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.node; if(!unlocked(i)){ toast("Nodo bloqueado: completen el anterior."); return; }
+    view.lvl=i; view.msg=null; render(); window.scrollTo({top:0,behavior:"smooth"});
+  });
+  const f=document.getElementById("toFinal"); if(f) f.onclick=()=>{ view.lvl="final"; render(); window.scrollTo({top:0}); };
+  const b=document.getElementById("backRoute"); if(b) b.onclick=()=>{ view.lvl=0; render(); };
+}
+
+function route(){
+  return `<nav class="route" aria-label="Nodos de la misión">${LEVELS.map((L,i)=>{
+    const st=S.levels[i], cls = st.done?"done":unlocked(i)?"open":"locked";
+    const label = st.done ? `✓ ${st.pts} pts` : unlocked(i) ? "Habilitado" : "Bloqueado";
+    return `<button type="button" class="node ${cls} ${view.lvl===i?"current":""}" data-node="${i}" ${cls==="locked"?'aria-disabled="true"':""}>
+      <span class="n">${L.code}</span><span class="t">${L.title}</span><span class="st">${label}</span></button>`;
+  }).join("")}</nav>`;
+}
+
+function geoSVG(){
+  // Cuadrado de lado a+b dividido en a², ab, ab, b²
+  return `<svg viewBox="0 0 220 220" width="200" role="img" aria-label="Cuadrado de lado a más b dividido en a cuadrado, dos rectángulos ab y b cuadrado">
+    <rect x="20" y="20" width="120" height="120" fill="rgba(243,180,69,.18)" stroke="var(--accent)"/>
+    <rect x="140" y="20" width="60" height="120" fill="rgba(98,211,232,.15)" stroke="var(--cyan)"/>
+    <rect x="20" y="140" width="120" height="60" fill="rgba(98,211,232,.15)" stroke="var(--cyan)"/>
+    <rect x="140" y="140" width="60" height="60" fill="rgba(67,208,143,.18)" stroke="var(--ok)"/>
+    <g font-family="IBM Plex Mono, monospace" font-size="16" fill="var(--fg)" text-anchor="middle">
+      <text x="80" y="86">a²</text><text x="170" y="86">ab</text><text x="80" y="176">ab</text><text x="170" y="176">b²</text>
+      <text x="80" y="14" font-size="12" fill="var(--muted)">a</text><text x="170" y="14" font-size="12" fill="var(--muted)">b</text>
+      <text x="10" y="84" font-size="12" fill="var(--muted)">a</text><text x="10" y="174" font-size="12" fill="var(--muted)">b</text>
+    </g></svg>`;
+}
+
+function levelView(i){
+  const L=LEVELS[i];
+  const theory = `<article class="card">
+    <div class="lvl-head"><div class="eyebrow">${L.code} · ${L.short}</div><h2>${L.title}</h2><p class="mission">${L.mission}</p></div>
+    <div class="formula">${L.formula}</div>
+    <div class="sec"><h3>Cómo se lee</h3><p>${L.read}</p></div>
+    <div class="sec"><h3>De dónde sale</h3>
+      ${L.geo?`<div class="geo">${geoSVG()}<p style="flex:1;min-width:200px">El área del cuadrado grande de lado <span class="m">(a + b)</span> es la suma de sus cuatro piezas: un cuadrado <span class="m">a²</span>, un cuadrado <span class="m">b²</span> y dos rectángulos <span class="m">ab</span>. Por eso aparece el término <span class="m">2ab</span>.</p></div>`:""}
+      <ol class="steps">${L.derive.map(d=>`<li><span class="m">${d}</span></li>`).join("")}</ol></div>
+    <div class="sec"><h3>Cómo reconocerlo</h3><ul>${L.recognize.map(r=>`<li>${r}</li>`).join("")}</ul></div>
+    <div class="sec"><h3>Ejemplo resuelto: <span class="m">${L.example.expr}</span></h3><ol class="steps">${L.example.steps.map(s=>`<li><span>${s}</span></li>`).join("")}</ol></div>
+    <div class="sec"><div class="warn">${L.error}</div></div>
+  </article>`;
+  return `<div class="grid">${theory}<aside class="card challenge" aria-label="Reto del nodo">${challenge(i)}</aside></div>`;
+}
+
+function challenge(i){
+  const L=LEVELS[i], st=S.levels[i];
+  if(st.done){
+    const next = i < LEVELS.length-1;
+    const all = S.levels.every(l=>l.done);
+    return `<div class="eyebrow">Reto del ${L.code}</div>
+      <div class="done-box"><h2 style="font-size:22px;margin-top:10px">Nodo asegurado</h2>
+      <div class="big">+${st.pts}</div>
+      <p style="color:var(--muted);margin:4px 0 0">${st.errors} error(es) · ${st.hints} pista(s)${st.errors===0&&st.hints===0?" · bonificación de nodo limpio incluida":""}</p></div>
+      <div class="actions" style="justify-content:center">${next ? `<button class="btn" type="button" data-node="${i+1}">Ir al ${LEVELS[i+1].code}</button>` : ""}
+      ${all ? `<button class="btn" type="button" id="toFinal">Ver resultado final</button>` : ""}</div>`;
+  }
+  const qi=st.q, Q=L.questions[qi], order=shuffleFor(i,qi), keys="ABCD";
+  const bar = L.questions.map((_,k)=>`<i class="${k<qi?"ok":k===qi?"now":""}"></i>`).join("");
+  const wrongSet = view.wrong || [];
+  return `<div class="eyebrow">Reto del ${L.code} · Pregunta ${qi+1} de 4</div>
+    <div class="qbar">${bar}</div>
+    <p class="qtext">${Q.q}</p>
+    <div class="opts">${order.map((oi,k)=>{
+      const isWrong = wrongSet.includes(oi);
+      return `<button type="button" class="opt ${isWrong?"wrong":""}" data-opt="${oi}" ${isWrong?"disabled":""}><span class="k">${keys[k]}</span><span>${Q.o[oi]}</span></button>`;
+    }).join("")}</div>
+    ${view.msg ? `<div class="feedback ${view.msg.type}">${view.msg.text}</div>` : ""}
+    <div class="actions">${!st.hint ? `<button class="btn sec2" type="button" id="hintBtn">Pedir pista (−${HINT_COST})</button>` : ""}</div>
+    <p class="pts-note">Esta pregunta vale ${PTS[Math.min(st.tries,2)]} pts en el intento actual.</p>`;
+}
+
+function bindLevel(){
+  const i=view.lvl, st=S.levels[i]; if(typeof i!=="number") return;
+  document.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>answer(i,+b.dataset.opt));
+  const h=document.getElementById("hintBtn"); if(h) h.onclick=()=>{
+    st.hint=true; st.hints++; st.pts=Math.max(0,st.pts-HINT_COST); save();
+    view.msg={type:"hint",text:"<b>Pista:</b> "+LEVELS[i].questions[st.q].h}; render();
+  };
+  document.querySelectorAll(".challenge [data-node]").forEach(b=>b.onclick=()=>{ view.lvl=+b.dataset.node; view.msg=null; view.wrong=[]; render(); window.scrollTo({top:0,behavior:"smooth"}); });
+}
+
+function answer(i,oi){
+  const st=S.levels[i], Q=LEVELS[i].questions[st.q];
+  if(oi===0){
+    const gained = PTS[Math.min(st.tries,2)];
+    st.pts += gained;
+    const last = st.q === LEVELS[i].questions.length-1;
+    const why = Q.w;
+    st.q++; st.tries=0; st.hint=false; view.wrong=[];
+    if(last){
+      st.done=true; st.q=LEVELS[i].questions.length-1;
+      if(st.errors===0 && st.hints===0) st.pts += CLEAN_BONUS;
+      if(S.levels.every(l=>l.done)) S.finished=Date.now();
+      view.msg=null; save(); render();
+      toast(i<LEVELS.length-1 ? `Correcto. ${LEVELS[i+1].code} desbloqueado.` : "Misión completada.");
+      return;
+    }
+    view.msg={type:"ok",text:`<b>Correcto, +${gained} pts.</b> ${why}`};
+    save(); render(); toast(`+${gained} pts`);
+  } else {
+    st.tries++; st.errors++; view.wrong=(view.wrong||[]).concat(oi);
+    view.msg={type:"bad",text:"<b>Acceso denegado.</b> Revisen el procedimiento e intenten otra opción."+(st.hint?"":" Si lo necesitan, pueden pedir una pista.")};
+    save(); render();
+  }
+}
+
+function finalScreen(){
+  const rows = LEVELS.map((L,i)=>`<tr><td>${L.code} · ${L.title}</td><td>${S.levels[i].pts}</td></tr>`).join("");
+  const errs = S.levels.reduce((a,l)=>a+l.errors,0), hints=S.levels.reduce((a,l)=>a+l.hints,0);
+  return `<div class="wrap"><section class="screen" style="max-width:720px">
+    <div class="cert">
+      <div class="eyebrow">Sistema asegurado · 7 de 7 nodos</div>
+      <h1 style="font-size:clamp(26px,5vw,36px);margin:10px 0 4px">${esc(S.team)}</h1>
+      <div class="score">${total()}</div>
+      <p style="color:var(--muted);margin:0">de ${MAX} puntos posibles · ${errs} error(es) · ${hints} pista(s)${S.finished&&S.started?" · tiempo: "+fmtDur(S.finished-S.started):""}</p>
+      <table>${rows}</table>
+      <div class="code" title="Código de verificación para el docente">${vcode()}</div>
+      <p style="font-size:13px;color:var(--muted);margin:10px auto 0">Muestren esta pantalla y el código de verificación al docente para registrar su puntaje.</p>
+      <div class="actions" style="justify-content:center"><button class="btn sec2" type="button" id="backRoute">Repasar los nodos</button></div>
+    </div></section></div>${footer()}`;
+}
+
+function footer(){ return `<footer>Razonamiento Matemático · Ingeniería en Ciberseguridad · Elaborado por Juan Carlos Fdez. PhD</footer>`; }
+
+view.wrong=[];
+if(S.team && S.levels.every(l=>l.done)) view.lvl="final";
+render();
+</script>
+</body>
+</html>

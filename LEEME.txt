@@ -1,0 +1,35 @@
+OPERACIÓN PRODUCTOS NOTABLES — Instrucciones de publicación en Netlify
+
+Contenido de la carpeta
+  index.html                       Actividad para los equipos
+  docente.html                     Panel del docente (avance en vivo de los 7 equipos)
+  netlify/functions/progreso.mjs   Función que guarda el avance (Netlify Blobs)
+  netlify.toml, package.json       Configuración para Netlify
+
+IMPORTANTE: el panel en vivo necesita la función del servidor. Netlify Drop
+(arrastrar y soltar) solo publica archivos estáticos: la actividad funciona,
+pero el panel no recibirá datos. Para que el panel funcione, publique desde su
+repositorio:
+
+1. Suba esta carpeta completa a su repositorio de GitHub (puede ser una
+   subcarpeta nueva o un repositorio aparte).
+2. En Netlify: Add new site > Import an existing project > elija el repositorio.
+   Si la carpeta está dentro de otro repositorio, escriba su ruta en
+   "Base directory". Deje vacío el "Build command".
+3. En Site configuration > Environment variables, cree la variable
+   DOCENTE_CLAVE con una clave que solo usted conozca (sirve para borrar los
+   datos entre una sección y otra).
+4. Publique. Los enlaces quedan así:
+     Estudiantes:  https://SU-SITIO.netlify.app/
+     Docente:      https://SU-SITIO.netlify.app/docente.html
+
+Uso en clase
+- Cada equipo abre el enlace en UN solo dispositivo y elige su número (1 a 7).
+- El panel se actualiza solo cada 5 segundos.
+- Para una nueva sección: en el panel escriba la clave y pulse "Borrar datos";
+  luego cada equipo pulsa "Reiniciar" en su dispositivo.
+- Al terminar, cada equipo muestra un código de verificación (PN-XXXXXX) que
+  también aparece en el panel, para contrastar el puntaje.
+
+Puntuación: 100 / 60 / 30 puntos por pregunta según el intento, −20 por pista,
++100 por nodo sin errores ni pistas. Máximo: 3500 puntos.

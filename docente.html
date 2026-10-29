@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel del Docente · Productos Notables</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0a1324; --panel:#101c33; --panel2:#15233f; --line:#243759;
+  --fg:#e7edf8; --muted:#93a3c4; --accent:#f3b445; --cyan:#62d3e8; --ok:#43d08f; --bad:#ff7070;
+  --f-display:"Chakra Petch","Trebuchet MS",sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Courier New",monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{background:var(--panel);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-block:14px}
+h1{font-family:var(--f-display);font-size:22px;margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.spacer{flex:1}
+.live{font-family:var(--f-mono);font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.live i{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.live.off i{background:var(--bad);box-shadow:none}
+main{padding-block:20px 40px;display:flex;flex-direction:column;gap:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi b{display:block;font-family:var(--f-mono);font-size:26px;color:var(--accent);font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted);font-family:var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
+.tablebox{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:980px;font-variant-numeric:tabular-nums}
+th,td{padding:10px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--panel2)}
+tr:last-child td{border-bottom:0}
+.rank{font-family:var(--f-display);font-size:20px;color:var(--muted);width:44px}
+tr.first .rank{color:var(--accent)}
+.team{font-weight:600}
+.pts{font-family:var(--f-mono);font-size:18px;color:var(--accent)}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:4px;width:140px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.cell{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:56px;height:42px;border-radius:6px;border:1px solid var(--line);font-family:var(--f-mono);font-size:12px;line-height:1.1;color:var(--muted)}
+.cell.done{border-color:var(--ok);color:var(--ok);background:rgba(67,208,143,.08)}
+.cell.now{border-color:var(--accent);color:var(--accent);background:rgba(243,180,69,.08)}
+.cell small{font-size:10px;opacity:.85}
+.mono{font-family:var(--f-mono)}
+.muted{color:var(--muted)}
+.stale{color:var(--bad)}
+.badge{font-family:var(--f-mono);font-size:12px;border:1px dashed var(--accent);border-radius:4px;padding:2px 6px;color:var(--accent)}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tools input{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:8px 10px;font:inherit;width:180px}
+button{font:inherit;cursor:pointer;border-radius:6px;padding:8px 14px;border:1px solid var(--line);background:transparent;color:var(--fg)}
+button.danger{border-color:var(--bad);color:var(--bad)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.msg{font-size:13px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding-block:4px 24px;font-family:var(--f-mono)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div><div class="eyebrow">Operación Productos Notables</div><h1>Panel del docente</h1></div>
+  <div class="spacer"></div>
+  <div class="live" id="live"><i></i><span id="liveTxt">Conectando…</span></div>
+</div></header>
+
+<main class="wrap">
+  <section class="kpis">
+    <div class="kpi"><span>Equipos conectados</span><b id="kTeams">0</b></div>
+    <div class="kpi"><span>Misión completada</span><b id="kDone">0</b></div>
+    <div class="kpi"><span>Puntaje promedio</span><b id="kAvg">0</b></div>
+    <div class="kpi"><span>Nodo con más errores</span><b id="kHard">—</b></div>
+  </section>
+
+  <section class="tablebox">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Equipo</th><th>Puntos</th>
+        <th>N01 (a+b)²</th><th>N02 (a−b)²</th><th>N03 (a+b)³</th><th>N04 (a−b)³</th><th>N05 a³+b³</th><th>N06 a³−b³</th><th>N07 Conj.</th>
+        <th>Errores</th><th>Pistas</th><th>Última actividad</th><th>Código</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="14" class="empty">Esperando a que los equipos inicien la misión…</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="tools">
+    <label for="clave" class="muted">Nueva sesión:</label>
+    <input id="clave" type="password" placeholder="Clave del docente" autocomplete="off">
+    <button class="danger" id="clear" type="button">Borrar datos de todos los equipos</button>
+    <span class="msg" id="msg"></span>
+  </section>
+</main>
+<footer>Razonamiento Matemático · Ingeniería en Ciberseguridad · Elaborado por Juan Carlos Fdez. PhD</footer>
+
+<script>
+const API="/api/progreso", NOD=7;
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function ago(ms){const s=Math.max(0,Math.round(ms/1000)); if(s<60) return "hace "+s+" s"; const m=Math.round(s/60); return m<60?"hace "+m+" min":"hace "+Math.floor(m/60)+" h";}
+
+async function load(){
+  try{
+    const r=await fetch(API,{cache:"no-store"}); if(!r.ok) throw 0;
+    const d=await r.json(); draw(d.equipos||[], d.ahora||Date.now());
+    $("live").classList.remove("off"); $("liveTxt").textContent="En vivo · actualizado "+new Date().toLocaleTimeString();
+  }catch(e){
+    $("live").classList.add("off"); $("liveTxt").textContent="Sin conexión con el servidor";
+  }
+}
+
+function draw(eqs, now){
+  eqs.sort((a,b)=>b.total-a.total || (a.finished||Infinity)-(b.finished||Infinity));
+  $("kTeams").textContent=eqs.length;
+  $("kDone").textContent=eqs.filter(e=>e.finished).length+" / "+eqs.length;
+  $("kAvg").textContent=eqs.length?Math.round(eqs.reduce((a,e)=>a+e.total,0)/eqs.length):0;
+  const errBy=Array(NOD).fill(0); eqs.forEach(e=>(e.nodos||[]).forEach((n,i)=>errBy[i]+=n.errors||0));
+  const mx=Math.max(...errBy); $("kHard").textContent=mx>0?"N0"+(errBy.indexOf(mx)+1)+" · "+mx:"—";
+  if(!eqs.length){ $("rows").innerHTML='<tr><td colspan="14" class="empty">Esperando a que los equipos inicien la misión…</td></tr>'; return; }
+  $("rows").innerHTML=eqs.map((e,k)=>{
+    const ns=e.nodos||[]; const errs=ns.reduce((a,n)=>a+(n.errors||0),0), hints=ns.reduce((a,n)=>a+(n.hints||0),0);
+    const cells=Array.from({length:NOD},(_,i)=>{
+      const n=ns[i]||{}; const now=!n.done && (i===0 || (ns[i-1]&&ns[i-1].done));
+      if(n.done) return `<td><span class="cell done">✓<small>${n.pts} pts</small></span></td>`;
+      if(now) return `<td><span class="cell now">P${(n.q||0)+1}/4<small>${n.pts||0} pts</small></span></td>`;
+      return `<td><span class="cell">—</span></td>`;
+    }).join("");
+    const pct=e.max?Math.round(e.total/e.max*100):0, since=now-(e.actualizado||now);
+    return `<tr class="${k===0?"first":""}"><td class="rank">${k+1}</td>
+      <td class="team">${esc(e.equipo)}</td>
+      <td><span class="pts">${e.total}</span><div class="bar"><i style="width:${pct}%"></i></div></td>
+      ${cells}
+      <td class="mono">${errs}</td><td class="mono">${hints}</td>
+      <td class="${since>180000&&!e.finished?"stale":"muted"}">${e.finished?"Terminó":ago(since)}</td>
+      <td>${e.codigo?`<span class="badge">${esc(e.codigo)}</span>`:'<span class="muted">—</span>'}</td></tr>`;
+  }).join("");
+}
+
+$("clear").onclick=async()=>{
+  const c=$("clave").value.trim(); if(!c){ $("msg").textContent="Escribe la clave del docente para borrar."; return; }
+  if($("clear").dataset.arm!=="1"){ $("clear").dataset.arm="1"; $("clear").textContent="Confirmar: borrar todo"; $("msg").textContent="Pulsa de nuevo para confirmar."; return; }
+  $("clear").dataset.arm=""; $("clear").textContent="Borrar datos de todos los equipos";
+  try{ const r=await fetch(API,{method:"DELETE",headers:{"x-clave":c}});
+    $("msg").textContent=r.ok?"Datos borrados. Pidan a los equipos pulsar «Reiniciar» en su dispositivo.":"Clave incorrecta."; load();
+  }catch(e){ $("msg").textContent="No se pudo conectar con el servidor."; }
+};
+
+load(); setInterval(load,5000);
+</script>
+</body>
+</html>
