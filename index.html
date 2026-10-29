@@ -148,13 +148,7 @@ const LEVELS = [
   geo:true,
   recognize:["Un binomio con signo + elevado al exponente 2.","El resultado siempre tiene <b>tres términos</b>: un trinomio cuadrado perfecto.","Los términos de los extremos son cuadrados y siempre positivos."],
   example:{expr:"(3x + 5)²",steps:["Cuadrado del primero: <span class='m'>(3x)² = 9x²</span>","Doble del primero por el segundo: <span class='m'>2(3x)(5) = 30x</span>","Cuadrado del segundo: <span class='m'>5² = 25</span>","Resultado: <span class='m'>9x² + 30x + 25</span>"]},
-  error:"<b>Error frecuente:</b> escribir <span class='m'>(a + b)² = a² + b²</span>. Falta el término central <span class='m'>2ab</span>. Prueba con a = 3, b = 4: (7)² = 49, pero 9 + 16 = 25.",
-  questions:[
-    {q:"Desarrolla (x + 7)²",o:["x² + 14x + 49","x² + 49","x² + 7x + 49","x² + 14x + 14"],h:"El término central es 2·x·7.",w:"x² + 2(x)(7) + 7² = x² + 14x + 49."},
-    {q:"Desarrolla (2a + 3b)²",o:["4a² + 12ab + 9b²","4a² + 6ab + 9b²","2a² + 12ab + 3b²","4a² + 9b²"],h:"Eleva al cuadrado el coeficiente y la variable: (2a)² = 4a².",w:"(2a)² + 2(2a)(3b) + (3b)² = 4a² + 12ab + 9b²."},
-    {q:"Desarrolla (5m² + 2n)²",o:["25m⁴ + 20m²n + 4n²","25m⁴ + 10m²n + 4n²","25m⁴ + 4n²","10m⁴ + 20m²n + 4n²"],h:"(m²)² = m⁴: los exponentes se multiplican. Término central: 2·(5m²)·(2n).",w:"(5m²)² + 2(5m²)(2n) + (2n)² = 25m⁴ + 20m²n + 4n²."},
-    {q:"Una sala de servidores cuadrada mide (x + 4) metros de lado. ¿Qué expresión da su área?",o:["x² + 8x + 16","x² + 16","x² + 4x + 16","2x + 8"],h:"Área de un cuadrado = lado².",w:"(x + 4)² = x² + 2(x)(4) + 16 = x² + 8x + 16 m²."}
-  ]
+  error:"<b>Error frecuente:</b> escribir <span class='m'>(a + b)² = a² + b²</span>. Falta el término central <span class='m'>2ab</span>. Prueba con a = 3, b = 4: (7)² = 49, pero 9 + 16 = 25."
 },
 {
   code:"NODO 02", title:"Cuadrado de una diferencia", short:"(a − b)²",
@@ -164,13 +158,7 @@ const LEVELS = [
   derive:["(a − b)² = (a − b)(a − b)","= a·a − a·b − b·a + b·b","= a² − ab − ab + b²","= a² − 2ab + b²"],
   recognize:["Un binomio con signo − elevado al exponente 2.","Solo el término central es negativo.","El último término es <b>positivo</b>, porque (−b)² = b²."],
   example:{expr:"(4y − 3)²",steps:["Cuadrado del primero: <span class='m'>(4y)² = 16y²</span>","Doble del primero por el segundo, con signo −: <span class='m'>−2(4y)(3) = −24y</span>","Cuadrado del segundo: <span class='m'>3² = 9</span>","Resultado: <span class='m'>16y² − 24y + 9</span>"]},
-  error:"<b>Error frecuente:</b> poner el último término negativo, <span class='m'>a² − 2ab − b²</span>. Un número al cuadrado nunca es negativo.",
-  questions:[
-    {q:"Desarrolla (x − 6)²",o:["x² − 12x + 36","x² − 36","x² − 12x − 36","x² + 12x + 36"],h:"El último término es (−6)², que es positivo.",w:"x² − 2(x)(6) + 36 = x² − 12x + 36."},
-    {q:"Desarrolla (3p − 2q)²",o:["9p² − 12pq + 4q²","9p² − 6pq + 4q²","9p² − 12pq − 4q²","9p² + 4q²"],h:"Término central: 2·(3p)·(2q).",w:"(3p)² − 2(3p)(2q) + (2q)² = 9p² − 12pq + 4q²."},
-    {q:"Desarrolla (½x − 4)²",o:["¼x² − 4x + 16","¼x² − 2x + 16","½x² − 4x + 16","¼x² − 8x + 16"],h:"2 · ½x · 4 = 4x.",w:"(½x)² − 2(½x)(4) + 16 = ¼x² − 4x + 16."},
-    {q:"Cálculo mental: usa (100 − 1)² para hallar 99²",o:["9801","9800","9899","9701"],h:"100² − 2(100)(1) + 1².",w:"10 000 − 200 + 1 = 9801."}
-  ]
+  error:"<b>Error frecuente:</b> poner el último término negativo, <span class='m'>a² − 2ab − b²</span>. Un número al cuadrado nunca es negativo."
 },
 {
   code:"NODO 03", title:"Cubo de una suma", short:"(a + b)³",
@@ -180,13 +168,7 @@ const LEVELS = [
   derive:["(a + b)³ = (a + b)²(a + b)","= (a² + 2ab + b²)(a + b)","= a³ + a²b + 2a²b + 2ab² + ab² + b³","= a³ + 3a²b + 3ab² + b³"],
   recognize:["Un binomio con signo + elevado al exponente 3.","El resultado tiene <b>cuatro términos</b> con coeficientes 1, 3, 3, 1.","Los exponentes de a bajan (3, 2, 1, 0) mientras los de b suben (0, 1, 2, 3)."],
   example:{expr:"(x + 2)³",steps:["Cubo del primero: <span class='m'>x³</span>","Triple del cuadrado del primero por el segundo: <span class='m'>3(x²)(2) = 6x²</span>","Triple del primero por el cuadrado del segundo: <span class='m'>3(x)(4) = 12x</span>","Cubo del segundo: <span class='m'>2³ = 8</span>","Resultado: <span class='m'>x³ + 6x² + 12x + 8</span>"]},
-  error:"<b>Error frecuente:</b> escribir <span class='m'>(a + b)³ = a³ + b³</span>. Faltan los dos términos centrales. Con a = 1, b = 1: 2³ = 8, pero 1 + 1 = 2.",
-  questions:[
-    {q:"Desarrolla (x + 3)³",o:["x³ + 9x² + 27x + 27","x³ + 27","x³ + 3x² + 3x + 27","x³ + 9x² + 9x + 27"],h:"3·x²·3 = 9x² y 3·x·3² = 27x.",w:"x³ + 3(x²)(3) + 3(x)(9) + 27 = x³ + 9x² + 27x + 27."},
-    {q:"Desarrolla (2y + 1)³",o:["8y³ + 12y² + 6y + 1","8y³ + 6y² + 6y + 1","2y³ + 6y² + 6y + 1","8y³ + 1"],h:"(2y)³ = 8y³ y (2y)² = 4y².",w:"8y³ + 3(4y²)(1) + 3(2y)(1) + 1 = 8y³ + 12y² + 6y + 1."},
-    {q:"En el desarrollo de (a + 2b)³, ¿cuál es el coeficiente del término ab²?",o:["12","6","4","8"],h:"El término es 3·a·(2b)².",w:"3 · a · 4b² = 12ab²."},
-    {q:"Un rack cúbico tiene arista (x + 1) dm. ¿Qué expresión da su volumen?",o:["x³ + 3x² + 3x + 1","x³ + 1","x³ + 3x + 1","3x³ + 3x² + 1"],h:"Volumen de un cubo = arista³.",w:"(x + 1)³ = x³ + 3x² + 3x + 1 dm³."}
-  ]
+  error:"<b>Error frecuente:</b> escribir <span class='m'>(a + b)³ = a³ + b³</span>. Faltan los dos términos centrales. Con a = 1, b = 1: 2³ = 8, pero 1 + 1 = 2."
 },
 {
   code:"NODO 04", title:"Cubo de una diferencia", short:"(a − b)³",
@@ -196,13 +178,7 @@ const LEVELS = [
   derive:["(a − b)³ = (a − b)²(a − b)","= (a² − 2ab + b²)(a − b)","= a³ − a²b − 2a²b + 2ab² + ab² − b³","= a³ − 3a²b + 3ab² − b³"],
   recognize:["Un binomio con signo − elevado al exponente 3.","Los signos se <b>alternan</b>: + − + −.","Los coeficientes siguen siendo 1, 3, 3, 1."],
   example:{expr:"(x − 2)³",steps:["Cubo del primero: <span class='m'>x³</span>","Menos el triple: <span class='m'>−3(x²)(2) = −6x²</span>","Más el triple: <span class='m'>+3(x)(4) = +12x</span>","Menos el cubo del segundo: <span class='m'>−8</span>","Resultado: <span class='m'>x³ − 6x² + 12x − 8</span>"]},
-  error:"<b>Error frecuente:</b> poner todos los términos centrales negativos. El tercer término es positivo porque contiene b², y (−b)² es positivo.",
-  questions:[
-    {q:"Desarrolla (x − 4)³",o:["x³ − 12x² + 48x − 64","x³ − 64","x³ − 12x² − 48x − 64","x³ + 12x² + 48x + 64"],h:"Signos alternados: + − + −.",w:"x³ − 3(x²)(4) + 3(x)(16) − 64 = x³ − 12x² + 48x − 64."},
-    {q:"Desarrolla (3m − 1)³",o:["27m³ − 27m² + 9m − 1","27m³ − 9m² + 9m − 1","27m³ − 27m² + 9m + 1","9m³ − 27m² + 9m − 1"],h:"3·(3m)²·1 = 3·9m² = 27m².",w:"27m³ − 3(9m²)(1) + 3(3m)(1) − 1 = 27m³ − 27m² + 9m − 1."},
-    {q:"¿Cuál es el patrón de signos en el desarrollo de (a − b)³?",o:["+  −  +  −","+  −  −  −","−  +  −  +","+  +  −  −"],h:"Los términos con potencia impar de b llevan signo −.",w:"a³ (+), −3a²b (−), +3ab² (+), −b³ (−)."},
-    {q:"Cálculo mental: usa (20 − 1)³ para hallar 19³",o:["6859","6861","7999","6841"],h:"8000 − 3(400)(1) + 3(20)(1) − 1.",w:"8000 − 1200 + 60 − 1 = 6859."}
-  ]
+  error:"<b>Error frecuente:</b> poner todos los términos centrales negativos. El tercer término es positivo porque contiene b², y (−b)² es positivo."
 },
 {
   code:"NODO 05", title:"Suma de cubos", short:"a³ + b³",
@@ -212,13 +188,7 @@ const LEVELS = [
   derive:["(a + b)(a² − ab + b²)","= a³ − a²b + ab² + a²b − ab² + b³","Los términos a²b y ab² se cancelan","= a³ + b³"],
   recognize:["Dos términos que son <b>cubos perfectos</b> unidos por +.","Las bases son las raíces cúbicas: ∛(8x³) = 2x, ∛27 = 3.","En el trinomio, el término central lleva signo <b>opuesto</b> al del binomio y el último siempre es positivo."],
   example:{expr:"27y³ + 1",steps:["Raíces cúbicas: <span class='m'>∛27y³ = 3y</span> y <span class='m'>∛1 = 1</span>","Binomio: <span class='m'>(3y + 1)</span>","Trinomio: <span class='m'>(3y)² − (3y)(1) + 1² = 9y² − 3y + 1</span>","Resultado: <span class='m'>27y³ + 1 = (3y + 1)(9y² − 3y + 1)</span>"]},
-  error:"<b>Error frecuente:</b> confundir el trinomio con un cuadrado perfecto y escribir −2ab. El término central es solo <span class='m'>−ab</span>.",
-  questions:[
-    {q:"Multiplica (x + 3)(x² − 3x + 9)",o:["x³ + 27","x³ + 9","x³ − 27","x³ + 3x² + 9"],h:"Es el patrón (a + b)(a² − ab + b²) con a = x, b = 3.",w:"a³ + b³ = x³ + 3³ = x³ + 27."},
-    {q:"Factoriza x³ + 125",o:["(x + 5)(x² − 5x + 25)","(x + 5)(x² + 5x + 25)","(x + 5)³","(x − 5)(x² + 5x + 25)"],h:"∛125 = 5. El término central del trinomio lleva signo opuesto.",w:"a = x, b = 5: (x + 5)(x² − 5x + 25)."},
-    {q:"Factoriza 8a³ + 27b³",o:["(2a + 3b)(4a² − 6ab + 9b²)","(2a + 3b)(4a² + 6ab + 9b²)","(2a + 3b)(4a² − 6ab − 9b²)","(8a + 27b)(a² − ab + b²)"],h:"Las bases son 2a y 3b.",w:"(2a + 3b)[(2a)² − (2a)(3b) + (3b)²] = (2a + 3b)(4a² − 6ab + 9b²)."},
-    {q:"Completa el término que falta: (m + 4)(m² − ___ + 16) = m³ + 64",o:["4m","8m","16m","m"],h:"El término central es a·b.",w:"a·b = m · 4 = 4m."}
-  ]
+  error:"<b>Error frecuente:</b> confundir el trinomio con un cuadrado perfecto y escribir −2ab. El término central es solo <span class='m'>−ab</span>."
 },
 {
   code:"NODO 06", title:"Diferencia de cubos", short:"a³ − b³",
@@ -228,13 +198,7 @@ const LEVELS = [
   derive:["(a − b)(a² + ab + b²)","= a³ + a²b + ab² − a²b − ab² − b³","Los términos a²b y ab² se cancelan","= a³ − b³"],
   recognize:["Dos cubos perfectos unidos por −.","Regla de signos <b>MOS</b>: el binomio lleva el <b>M</b>ismo signo, el término central el <b>O</b>puesto y el último <b>S</b>iempre positivo.","Compara con la suma de cubos: solo cambian los signos."],
   example:{expr:"x³ − 8",steps:["Raíces cúbicas: <span class='m'>∛x³ = x</span> y <span class='m'>∛8 = 2</span>","Binomio con el mismo signo: <span class='m'>(x − 2)</span>","Trinomio: <span class='m'>x² + 2x + 4</span>","Resultado: <span class='m'>x³ − 8 = (x − 2)(x² + 2x + 4)</span>"]},
-  error:"<b>Error frecuente:</b> escribir <span class='m'>a³ − b³ = (a − b)³</span>. El cubo de una diferencia tiene cuatro términos; la diferencia de cubos solo dos.",
-  questions:[
-    {q:"Multiplica (x − 2)(x² + 2x + 4)",o:["x³ − 8","x³ + 8","x³ − 4x + 8","x³ − 6x² + 12x − 8"],h:"Patrón (a − b)(a² + ab + b²) con a = x, b = 2.",w:"a³ − b³ = x³ − 8."},
-    {q:"Factoriza y³ − 64",o:["(y − 4)(y² + 4y + 16)","(y − 4)(y² − 4y + 16)","(y + 4)(y² − 4y + 16)","(y − 4)³"],h:"∛64 = 4. Aplica la regla MOS.",w:"(y − 4)(y² + 4y + 16)."},
-    {q:"Factoriza 125m³ − 1",o:["(5m − 1)(25m² + 5m + 1)","(5m − 1)(25m² − 5m + 1)","(5m + 1)(25m² + 5m + 1)","(25m − 1)(5m² + m + 1)"],h:"La base de 125m³ es 5m.",w:"(5m − 1)[(5m)² + (5m)(1) + 1] = (5m − 1)(25m² + 5m + 1)."},
-    {q:"Según la regla MOS, ¿qué signo lleva el último término del trinomio en una diferencia de cubos?",o:["Siempre positivo","Siempre negativo","El mismo del binomio","Depende de la base"],h:"La S de MOS.",w:"El último término es b², que siempre es positivo."}
-  ]
+  error:"<b>Error frecuente:</b> escribir <span class='m'>a³ − b³ = (a − b)³</span>. El cubo de una diferencia tiene cuatro términos; la diferencia de cubos solo dos."
 },
 {
   code:"NODO 07", title:"Binomios conjugados", short:"(a + b)(a − b)",
@@ -244,15 +208,172 @@ const LEVELS = [
   derive:["(a + b)(a − b)","= a² − ab + ab − b²","Los términos −ab y +ab se cancelan","= a² − b²"],
   recognize:["Dos binomios con los <b>mismos términos</b> y signos opuestos.","El resultado tiene solo <b>dos términos</b> y siempre es una resta.","Al factorizar: dos cuadrados perfectos separados por −."],
   example:{expr:"(3a + 5b)(3a − 5b)",steps:["Cuadrado del primero: <span class='m'>(3a)² = 9a²</span>","Cuadrado del segundo: <span class='m'>(5b)² = 25b²</span>","Resultado: <span class='m'>9a² − 25b²</span>"]},
-  error:"<b>Error frecuente:</b> intentar factorizar <span class='m'>a² + b²</span> como binomios conjugados. Una suma de cuadrados no se factoriza en los números reales.",
-  questions:[
-    {q:"Multiplica (x + 9)(x − 9)",o:["x² − 81","x² + 81","x² − 18x − 81","x² − 9"],h:"Cuadrado del primero menos cuadrado del segundo.",w:"x² − 9² = x² − 81."},
-    {q:"Multiplica (4a + 5b)(4a − 5b)",o:["16a² − 25b²","16a² + 25b²","16a² − 40ab − 25b²","4a² − 5b²"],h:"(4a)² = 16a².",w:"(4a)² − (5b)² = 16a² − 25b²."},
-    {q:"Factoriza 49m² − 16",o:["(7m + 4)(7m − 4)","(7m − 4)²","(49m + 16)(m − 1)","(7m + 16)(7m − 1)"],h:"√49m² = 7m y √16 = 4.",w:"49m² − 16 = (7m)² − 4² = (7m + 4)(7m − 4)."},
-    {q:"Cálculo mental: usa (50 + 1)(50 − 1) para hallar 51 × 49",o:["2499","2500","2501","2449"],h:"50² − 1².",w:"2500 − 1 = 2499."}
-  ]
+  error:"<b>Error frecuente:</b> intentar factorizar <span class='m'>a² + b²</span> como binomios conjugados. Una suma de cuadrados no se factoriza en los números reales."
 }
 ];
+
+// ===== Generador de retos: cada equipo recibe ejercicios nuevos en cada partida =====
+const SUPD="⁰¹²³⁴⁵⁶⁷⁸⁹";
+const sp=n=>String(n).split("").map(d=>SUPD[+d]).join("");
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+const shuf=arr=>{const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const M=(c,v)=>({c,v:v||{}});
+const mul=(a,b)=>{const v={...a.v};for(const k in b.v)v[k]=(v[k]||0)+b.v[k];return M(a.c*b.c,v);};
+const pw=(a,k)=>{let r=M(1);for(let i=0;i<k;i++)r=mul(r,a);return r;};
+const sc=(a,k)=>M(a.c*k,a.v);
+const vars=m=>Object.keys(m.v).sort().filter(k=>m.v[k]>0).map(k=>k+(m.v[k]>1?sp(m.v[k]):"")).join("");
+function fm(m){const s=vars(m),c=Math.abs(m.c);return (c===1&&s)?s:String(c)+s;}
+function fP(ts){let out="";ts.filter(t=>t.c!==0).forEach((t,i)=>{out+= i===0 ? (t.c<0?"−":"")+fm(t) : (t.c<0?" − ":" + ")+fm(t);});return out||"0";}
+const par=m=>"("+fP([m])+")";
+const num=n=>{const s=String(Math.abs(n));const g=Math.abs(n)>=10000?s.replace(/\B(?=(\d{3})+(?!\d))/g," "):s;return (n<0?"−":"")+g;};
+// monomio "base": coeficiente c, variable x con exponente e
+const base=(c,x,e)=>x?M(c,{[x]:e||1}):M(c);
+const VP=[["x","y"],["a","b"],["m","n"],["p","q"],["t","w"]];
+// coeficiente sin elevar (error típico): conserva el coeficiente, eleva la parte literal
+const noPow=(a,k)=>M(a.c,pw(M(1,a.v),k).v);
+
+function build(correct,cands){ // correct: string; cands: strings
+  const seen=new Set([correct]),ds=[];
+  for(const c of shuf(cands)){ if(!seen.has(c)){seen.add(c);ds.push(c);} if(ds.length===3)break; }
+  let k=1; while(ds.length<3){ const extra=correct+" + "+k; if(!seen.has(extra)){seen.add(extra);ds.push(extra);} k++; }
+  return [correct,...ds];
+}
+function mk(q,correct,cands,h,w){ const o=build(correct,cands); return {q,o,h,w,order:shuf([0,1,2,3])}; }
+
+// ---- Cuadrado de un binomio (s = +1 suma, −1 diferencia)
+function qSq(a,b,s,q){
+  const A=pw(a,2),AB=mul(a,b),B=pw(b,2);
+  const correct=fP([A,sc(AB,2*s),B]);
+  const cands=[fP([A,sc(B,s<0?-1:1)]),fP([A,sc(AB,s),B]),fP([A,sc(AB,2*s),sc(B,-1)]),fP([noPow(a,2),sc(AB,2*s),B]),fP([A,sc(AB,2*s),noPow(b,2)]),fP([A,sc(AB,-2*s),B]),fP([A,sc(AB,4*s),B])];
+  const sg=s>0?"+":"−";
+  return mk(q||`Desarrolla (${fP([a,sc(b,s)])})²`,correct,cands,
+    s>0?"Cuadrado del primero, más el doble del primero por el segundo, más el cuadrado del segundo.":"Solo el término central es negativo; el último término es un cuadrado y siempre es positivo.",
+    `${par(a)}² ${sg} 2${par(a)}${par(b)} + ${par(b)}² = ${correct}.`);
+}
+// ---- Cubo de un binomio
+function qCube(a,b,s,q){
+  const t=[pw(a,3),sc(mul(pw(a,2),b),3*s),sc(mul(a,pw(b,2)),3),sc(pw(b,3),s)];
+  const correct=fP(t);
+  const cands=[fP([t[0],t[3]]),fP([t[0],sc(mul(pw(a,2),b),s),mul(a,pw(b,2)),t[3]]),fP([t[0],t[1],sc(t[2],s),t[3]]),fP([t[0],sc(t[1],-1),t[2],sc(t[3],-1)]),fP([noPow(a,3),t[1],t[2],t[3]]),fP([t[0],t[1],t[2],sc(noPow(b,3),s)]),fP([t[0],sc(mul(pw(a,2),b),2*s),sc(mul(a,pw(b,2)),2),t[3]])];
+  const sg=s>0?"+":"−";
+  return mk(q||`Desarrolla (${fP([a,sc(b,s)])})³`,correct,cands,
+    s>0?"Coeficientes 1, 3, 3, 1: los exponentes del primero bajan y los del segundo suben.":"Coeficientes 1, 3, 3, 1 con signos alternados: + − + −.",
+    `${par(a)}³ ${sg} 3${par(a)}²${par(b)} + 3${par(a)}${par(b)}² ${sg} ${par(b)}³ = ${correct}.`);
+}
+// ---- Suma / diferencia de cubos
+const facC=(a,b,bs,ms,ls)=>`(${fP([a,sc(b,bs)])})(${fP([pw(a,2),sc(mul(a,b),ms),sc(pw(b,2),ls||1)])})`;
+function qCubesMul(a,b,s){
+  const correct=fP([pw(a,3),sc(pw(b,3),s)]);
+  const cube=fP([pw(a,3),sc(mul(pw(a,2),b),3*s),sc(mul(a,pw(b,2)),3),sc(pw(b,3),s)]);
+  const cands=[fP([pw(a,3),sc(pw(b,3),-s)]),fP([pw(a,3),sc(pw(b,2),s)]),cube,fP([pw(a,3),sc(mul(pw(a,2),b),s),sc(pw(b,3),s)])];
+  return mk(`Multiplica ${facC(a,b,s,-s)}`,correct,cands,
+    `Es el patrón (a ${s>0?"+":"−"} b)(a² ${s>0?"−":"+"} ab + b²): los términos centrales se cancelan.`,
+    `a = ${fP([a])}, b = ${fP([b])}: a³ ${s>0?"+":"−"} b³ = ${correct}.`);
+}
+function qCubesFac(a,b,s){
+  const expr=fP([pw(a,3),sc(pw(b,3),s)]);
+  const correct=facC(a,b,s,-s);
+  const cands=[facC(a,b,s,s),facC(a,b,-s,s),facC(a,b,-s,-s),facC(a,b,s,-2*s),`(${fP([a,sc(b,s)])})³`];
+  return mk(`Factoriza ${expr}`,correct,cands,
+    `Raíces cúbicas: ∛(${fP([pw(a,3)])}) = ${fP([a])} y ∛(${fP([pw(b,3)])}) = ${fP([b])}. Regla MOS: Mismo signo, Opuesto, Siempre positivo.`,
+    `a = ${fP([a])}, b = ${fP([b])}: ${correct}.`);
+}
+function qCubesMissing(k,s){
+  const m=base(1,"m"),K=M(k);
+  const correct=fP([M(k,{m:1})]);
+  const cands=[fP([M(2*k,{m:1})]),fP([M(k*k,{m:1})]),fP([M(k,{m:2})]),fP([M(1,{m:1})])];
+  return mk(`Completa el término que falta: (${fP([m,sc(K,s)])})(m² ${s>0?"−":"+"} ___ + ${k*k}) = ${fP([pw(m,3),sc(pw(K,3),s)])}`,correct,cands,
+    "El término central del trinomio es el producto de las dos bases: a·b.",
+    `a·b = m · ${k} = ${correct}.`);
+}
+// ---- Binomios conjugados
+function qConjMul(a,b){
+  const correct=fP([pw(a,2),sc(pw(b,2),-1)]);
+  const cands=[fP([pw(a,2),pw(b,2)]),fP([pw(a,2),sc(mul(a,b),-2),sc(pw(b,2),-1)]),fP([pw(a,2),sc(b,-1)]),fP([noPow(a,2),sc(noPow(b,2),-1)]),fP([pw(a,2),sc(mul(a,b),2),sc(pw(b,2),-1)])];
+  return mk(`Multiplica (${fP([a,b])})(${fP([a,sc(b,-1)])})`,correct,cands,
+    "Cuadrado del primero menos cuadrado del segundo.",`${par(a)}² − ${par(b)}² = ${correct}.`);
+}
+function qConjFac(a,b){
+  const expr=fP([pw(a,2),sc(pw(b,2),-1)]);
+  const correct=`(${fP([a,b])})(${fP([a,sc(b,-1)])})`;
+  const B2=pw(b,2);
+  const cands=[`(${fP([a,sc(b,-1)])})²`,`(${fP([a,b])})²`,`(${fP([a,B2])})(${fP([a,sc(B2,-1)])})`,`(${fP([pw(a,2),b])})(${fP([M(1),sc(b,-1)])})`];
+  return mk(`Factoriza ${expr}`,correct,cands,
+    `Raíces cuadradas: √(${fP([pw(a,2)])}) = ${fP([a])} y √(${fP([B2])}) = ${fP([b])}.`,
+    `${expr} = ${par(a)}² − ${par(b)}² = ${correct}.`);
+}
+// ---- Cálculo mental
+function qMental(kind){
+  if(kind==="sq+"){const A=pick([20,30,40,50,60,70,80,90]),B=ri(1,3),N=A+B,c=A*A+2*A*B+B*B;
+    return mk(`Cálculo mental: usa (${A} + ${B})² para hallar ${N}²`,num(c),[num(A*A+B*B),num(A*A+A*B+B*B),num(c+10),num(c-2*A*B+A*B)],`${A}² + 2(${A})(${B}) + ${B}².`,`${num(A*A)} + ${num(2*A*B)} + ${B*B} = ${num(c)}.`);}
+  if(kind==="sq-"){const A=pick([30,40,50,60,70,80,100]),B=ri(1,2),N=A-B,c=A*A-2*A*B+B*B;
+    return mk(`Cálculo mental: usa (${A} − ${B})² para hallar ${N}²`,num(c),[num(A*A-B*B),num(A*A-2*A*B-B*B),num(c+2*A*B-A*B),num(c-1)],`${A}² − 2(${A})(${B}) + ${B}².`,`${num(A*A)} − ${num(2*A*B)} + ${B*B} = ${num(c)}.`);}
+  if(kind==="cu-"){const A=pick([10,20,30]),B=ri(1,2),N=A-B,c=N**3;
+    return mk(`Cálculo mental: usa (${A} − ${B})³ para hallar ${N}³`,num(c),[num(A**3-B**3),num(c+2*B**3),num(A**3-3*A*A*B-3*A*B*B-B**3),num(c+10)],"Signos alternados: + − + −.",`${num(A**3)} − ${num(3*A*A*B)} + ${num(3*A*B*B)} − ${B**3} = ${num(c)}.`);}
+  // conjugados
+  const A=pick([20,30,40,50,60,70,100]),B=ri(1,4),c=A*A-B*B;
+  return mk(`Cálculo mental: usa (${A} + ${B})(${A} − ${B}) para hallar ${A+B} × ${A-B}`,num(c),[num(A*A),num(A*A+B*B),num(A*A-2*B),num(c-B*B)],`${A}² − ${B}².`,`${num(A*A)} − ${B*B} = ${num(c)}.`);
+}
+function qCoef(s){ // coeficiente de un término del cubo
+  const [x,y]=pick(VP),k=ri(2,4);
+  if(s>0){ const c=3*k*k;
+    return mk(`En el desarrollo de (${x} + ${k}${y})³, ¿cuál es el coeficiente del término ${x}${y}²?`,String(c),[String(3*k),String(k*k),String(6*k),String(k**3),String(c*2)],`El término es 3·${x}·(${k}${y})².`,`3 · ${x} · ${k*k}${y}² = ${c}${x}${y}².`);
+  }
+  const c=-3*k;
+  return mk(`En el desarrollo de (${x} − ${k}${y})³, ¿cuál es el coeficiente del término ${x}²${y}?`,num(c),[num(3*k),num(-k),num(-3*k*k),num(3*k*k)],`El término es −3·${x}²·(${k}${y}).`,`−3 · ${x}² · ${k}${y} = ${num(c)}${x}²${y}.`);
+}
+
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function cop(lo1,hi1,lo2,hi2){ let a,b; do{ a=ri(lo1,hi1); b=ri(lo2,hi2); }while(gcd(a,b)!==1); return [a,b]; }
+function genLevel(i){
+  const [x,y]=pick(VP);
+  switch(i){
+    case 0: return [
+      qSq(base(1,x),M(ri(2,12)),1),
+      qSq(base(ri(2,5),x),base(ri(2,5),y),1),
+      qSq(base(ri(2,6),x,2),base(ri(1,4),y),1),
+      Math.random()<.5 ? qMental("sq+") : (k=>qSq(base(1,"x"),M(k),1,`Una sala de servidores cuadrada mide (x + ${k}) metros de lado. ¿Qué expresión da su área en m²?`))(ri(2,9))
+    ];
+    case 1: return [
+      qSq(base(1,x),M(ri(2,12)),-1),
+      qSq(base(ri(2,5),x),base(ri(2,5),y),-1),
+      qSq(base(ri(2,6),x,2),base(ri(1,4),y),-1),
+      Math.random()<.5 ? qMental("sq-") : (k=>qSq(base(1,"x"),M(k),-1,`Un panel de control cuadrado medía x cm de lado; tras recortarle un margen, su lado mide (x − ${k}) cm. ¿Qué expresión da su nueva área en cm²?`))(ri(2,9))
+    ];
+    case 2: return [
+      qCube(base(1,x),M(ri(2,5)),1),
+      qCube(base(ri(2,3),x),M(ri(1,3)),1),
+      qCoef(1),
+      (k=>qCube(base(1,"x"),M(k),1,`Un rack de servidores cúbico tiene arista (x + ${k}) dm. ¿Qué expresión da su volumen en dm³?`))(ri(1,3))
+    ];
+    case 3: return [
+      qCube(base(1,x),M(ri(2,5)),-1),
+      qCube(base(ri(2,3),x),M(ri(1,2)),-1),
+      qCoef(-1),
+      qMental("cu-")
+    ];
+    case 4: return [
+      qCubesMul(base(1,x),M(ri(2,6)),1),
+      qCubesFac(base(1,x),M(ri(2,6)),1),
+      (([c,d])=>qCubesFac(base(c,x),base(d,y),1))(cop(2,4,1,4)),
+      qCubesMissing(ri(2,6),1)
+    ];
+    case 5: return [
+      qCubesMul(base(1,x),M(ri(2,6)),-1),
+      qCubesFac(base(1,x),M(ri(2,6)),-1),
+      Math.random()<.5 ? qCubesFac(base(ri(2,5),x),M(1),-1) : (([c,d])=>qCubesFac(base(c,x),base(d,y),-1))(cop(2,4,2,4)),
+      qCubesMissing(ri(2,6),-1)
+    ];
+    default: return [
+      qConjMul(base(1,x),M(ri(2,12))),
+      qConjMul(base(ri(2,6),x),base(ri(2,6),y)),
+      (([c,d])=>qConjFac(base(c,x),M(d)))(cop(2,9,2,9)),
+      qMental("conj")
+    ];
+  }
+}
+function QS(i){ const st=S.levels[i]; if(!st.qs) st.qs=genLevel(i); return st.qs; }
 
 const PTS = [100, 60, 30];       // por pregunta según intento
 const HINT_COST = 20;
@@ -287,12 +408,6 @@ const SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','�
 function ex(t){ return String(t).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,m=>'<sup>'+[...m].map(c=>SUP[c]).join('')+'</sup>'); }
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function toast(t){ const el=document.getElementById("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove("show"),2200); }
-function shuffleFor(lvl,q){ // orden estable por pregunta, distinto entre preguntas
-  const n = LEVELS[lvl].questions[q].o.length, idx=[...Array(n).keys()];
-  let seed = (lvl+1)*31 + (q+1)*17 + (parseInt((S.teamId||'').split('-')[1])||0)*53;
-  for(let i=n-1;i>0;i--){ seed=(seed*9301+49297)%233280; const j=Math.floor(seed/233280*(i+1)); [idx[i],idx[j]]=[idx[j],idx[i]]; }
-  return idx;
-}
 function vcode(){
   const str = S.team+"|"+total()+"|"+S.levels.map(l=>l.pts+":"+l.errors+":"+l.hints).join(",");
   let h=2166136261; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); }
@@ -326,7 +441,7 @@ function startScreen(){
       <div><b>−20</b>Por cada pista solicitada</div>
       <div><b>+100</b>Bonificación por nodo limpio, sin errores ni pistas</div>
     </div>
-    <p style="margin-top:18px;font-size:14px">Cada nodo tiene 4 preguntas. El siguiente nodo se habilita al responder correctamente las 4. Puntaje máximo: <span class="mono">${MAX}</span>.</p>
+    <p style="margin-top:18px;font-size:14px">Cada nodo tiene 4 preguntas, con ejercicios nuevos en cada partida. El siguiente nodo se habilita al responder correctamente las 4. Puntaje máximo: <span class="mono">${MAX}</span>.</p>
   </section></div>${footer()}`;
 }
 function bindStart(){
@@ -412,8 +527,8 @@ function challenge(i){
       <div class="actions" style="justify-content:center">${next ? `<button class="btn" type="button" data-node="${i+1}">Ir al ${LEVELS[i+1].code}</button>` : ""}
       ${all ? `<button class="btn" type="button" id="toFinal">Ver resultado final</button>` : ""}</div>`;
   }
-  const qi=st.q, Q=L.questions[qi], order=shuffleFor(i,qi), keys="ABCD";
-  const bar = L.questions.map((_,k)=>`<i class="${k<qi?"ok":k===qi?"now":""}"></i>`).join("");
+  const qs=QS(i), qi=st.q, Q=qs[qi], order=Q.order, keys="ABCD";
+  const bar = qs.map((_,k)=>`<i class="${k<qi?"ok":k===qi?"now":""}"></i>`).join("");
   const wrongSet = view.wrong || [];
   return `<div class="eyebrow">Reto del ${L.code} · Pregunta ${qi+1} de 4</div>
     <div class="qbar">${bar}</div>
@@ -422,7 +537,7 @@ function challenge(i){
       const isWrong = wrongSet.includes(oi);
       return `<button type="button" class="opt ${isWrong?"wrong":""}" data-opt="${oi}" ${isWrong?"disabled":""}><span class="k">${keys[k]}</span><span>${ex(Q.o[oi])}</span></button>`;
     }).join("")}</div>
-    ${view.msg ? `<div class="feedback ${view.msg.type}">${view.msg.text}</div>` : ""}
+    ${view.msg ? `<div class="feedback ${view.msg.type}">${ex(view.msg.text)}</div>` : ""}
     <div class="actions">${!st.hint ? `<button class="btn sec2" type="button" id="hintBtn">Pedir pista (−${HINT_COST})</button>` : ""}</div>
     <p class="pts-note">Esta pregunta vale ${PTS[Math.min(st.tries,2)]} pts en el intento actual.</p>`;
 }
@@ -432,21 +547,21 @@ function bindLevel(){
   document.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>answer(i,+b.dataset.opt));
   const h=document.getElementById("hintBtn"); if(h) h.onclick=()=>{
     st.hint=true; st.hints++; st.pts=Math.max(0,st.pts-HINT_COST); save();
-    view.msg={type:"hint",text:"<b>Pista:</b> "+LEVELS[i].questions[st.q].h}; render();
+    view.msg={type:"hint",text:"<b>Pista:</b> "+QS(i)[st.q].h}; render();
   };
   document.querySelectorAll(".challenge [data-node]").forEach(b=>b.onclick=()=>{ view.lvl=+b.dataset.node; view.msg=null; view.wrong=[]; render(); window.scrollTo({top:0,behavior:"smooth"}); });
 }
 
 function answer(i,oi){
-  const st=S.levels[i], Q=LEVELS[i].questions[st.q];
+  const st=S.levels[i], Q=QS(i)[st.q];
   if(oi===0){
     const gained = PTS[Math.min(st.tries,2)];
     st.pts += gained;
-    const last = st.q === LEVELS[i].questions.length-1;
+    const last = st.q === QS(i).length-1;
     const why = Q.w;
     st.q++; st.tries=0; st.hint=false; view.wrong=[];
     if(last){
-      st.done=true; st.q=LEVELS[i].questions.length-1;
+      st.done=true; st.q=QS(i).length-1;
       if(st.errors===0 && st.hints===0) st.pts += CLEAN_BONUS;
       if(S.levels.every(l=>l.done)) S.finished=Date.now();
       view.msg=null; save(); render();
