@@ -31,6 +31,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .mono{font-family:var(--f-mono)}
 .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
 button{font:inherit;cursor:pointer}
+sup{font-size:.72em;line-height:0;vertical-align:.55em;font-weight:600}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* Barra superior */
@@ -151,7 +152,7 @@ const LEVELS = [
   questions:[
     {q:"Desarrolla (x + 7)²",o:["x² + 14x + 49","x² + 49","x² + 7x + 49","x² + 14x + 14"],h:"El término central es 2·x·7.",w:"x² + 2(x)(7) + 7² = x² + 14x + 49."},
     {q:"Desarrolla (2a + 3b)²",o:["4a² + 12ab + 9b²","4a² + 6ab + 9b²","2a² + 12ab + 3b²","4a² + 9b²"],h:"Eleva al cuadrado el coeficiente y la variable: (2a)² = 4a².",w:"(2a)² + 2(2a)(3b) + (3b)² = 4a² + 12ab + 9b²."},
-    {q:"Desarrolla (5m² + 1)²",o:["25m⁴ + 10m² + 1","25m⁴ + 5m² + 1","10m⁴ + 10m² + 1","25m² + 10m + 1"],h:"(m²)² = m⁴: los exponentes se multiplican.",w:"(5m²)² + 2(5m²)(1) + 1² = 25m⁴ + 10m² + 1."},
+    {q:"Desarrolla (5m² + 2n)²",o:["25m⁴ + 20m²n + 4n²","25m⁴ + 10m²n + 4n²","25m⁴ + 4n²","10m⁴ + 20m²n + 4n²"],h:"(m²)² = m⁴: los exponentes se multiplican. Término central: 2·(5m²)·(2n).",w:"(5m²)² + 2(5m²)(2n) + (2n)² = 25m⁴ + 20m²n + 4n²."},
     {q:"Una sala de servidores cuadrada mide (x + 4) metros de lado. ¿Qué expresión da su área?",o:["x² + 8x + 16","x² + 16","x² + 4x + 16","2x + 8"],h:"Área de un cuadrado = lado².",w:"(x + 4)² = x² + 2(x)(4) + 16 = x² + 8x + 16 m²."}
   ]
 },
@@ -282,11 +283,13 @@ function sync(){
 function total(){ return S.levels.reduce((a,l)=>a+l.pts,0); }
 function unlocked(i){ return i===0 || S.levels[i-1].done; }
 function firstOpen(){ const i = S.levels.findIndex(l=>!l.done); return i<0 ? LEVELS.length-1 : i; }
+const SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9'};
+function ex(t){ return String(t).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,m=>'<sup>'+[...m].map(c=>SUP[c]).join('')+'</sup>'); }
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function toast(t){ const el=document.getElementById("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove("show"),2200); }
 function shuffleFor(lvl,q){ // orden estable por pregunta, distinto entre preguntas
   const n = LEVELS[lvl].questions[q].o.length, idx=[...Array(n).keys()];
-  let seed = (lvl+1)*31 + (q+1)*17 + (S.team.length*7);
+  let seed = (lvl+1)*31 + (q+1)*17 + (parseInt((S.teamId||'').split('-')[1])||0)*53;
   for(let i=n-1;i>0;i--){ seed=(seed*9301+49297)%233280; const j=Math.floor(seed/233280*(i+1)); [idx[i],idx[j]]=[idx[j],idx[i]]; }
   return idx;
 }
@@ -385,7 +388,7 @@ function levelView(i){
   const L=LEVELS[i];
   const theory = `<article class="card">
     <div class="lvl-head"><div class="eyebrow">${L.code} · ${L.short}</div><h2>${L.title}</h2><p class="mission">${L.mission}</p></div>
-    <div class="formula">${L.formula}</div>
+    <div class="formula">${ex(L.formula)}</div>
     <div class="sec"><h3>Cómo se lee</h3><p>${L.read}</p></div>
     <div class="sec"><h3>De dónde sale</h3>
       ${L.geo?`<div class="geo">${geoSVG()}<p style="flex:1;min-width:200px">El área del cuadrado grande de lado <span class="m">(a + b)</span> es la suma de sus cuatro piezas: un cuadrado <span class="m">a²</span>, un cuadrado <span class="m">b²</span> y dos rectángulos <span class="m">ab</span>. Por eso aparece el término <span class="m">2ab</span>.</p></div>`:""}
@@ -414,10 +417,10 @@ function challenge(i){
   const wrongSet = view.wrong || [];
   return `<div class="eyebrow">Reto del ${L.code} · Pregunta ${qi+1} de 4</div>
     <div class="qbar">${bar}</div>
-    <p class="qtext">${Q.q}</p>
+    <p class="qtext">${ex(Q.q)}</p>
     <div class="opts">${order.map((oi,k)=>{
       const isWrong = wrongSet.includes(oi);
-      return `<button type="button" class="opt ${isWrong?"wrong":""}" data-opt="${oi}" ${isWrong?"disabled":""}><span class="k">${keys[k]}</span><span>${Q.o[oi]}</span></button>`;
+      return `<button type="button" class="opt ${isWrong?"wrong":""}" data-opt="${oi}" ${isWrong?"disabled":""}><span class="k">${keys[k]}</span><span>${ex(Q.o[oi])}</span></button>`;
     }).join("")}</div>
     ${view.msg ? `<div class="feedback ${view.msg.type}">${view.msg.text}</div>` : ""}
     <div class="actions">${!st.hint ? `<button class="btn sec2" type="button" id="hintBtn">Pedir pista (−${HINT_COST})</button>` : ""}</div>
