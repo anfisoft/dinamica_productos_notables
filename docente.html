@@ -49,6 +49,9 @@ tr.first .rank{color:var(--accent)}
 .muted{color:var(--muted)}
 .stale{color:var(--bad)}
 .badge{font-family:var(--f-mono);font-size:12px;border:1px dashed var(--accent);border-radius:4px;padding:2px 6px;color:var(--accent)}
+.warnbox{background:rgba(255,112,112,.08);border:1px solid rgba(255,112,112,.45);border-radius:10px;padding:12px 16px}
+tr.dup td{background:rgba(255,112,112,.05)}
+tr.dup .cell{opacity:.8}
 .empty{padding:30px;text-align:center;color:var(--muted)}
 .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .tools input{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:8px 10px;font:inherit;width:180px}
@@ -74,6 +77,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;padding-block:4px 24p
     <div class="kpi"><span>Nodo con más errores</span><b id="kHard">—</b></div>
   </section>
 
+  <div class="warnbox" id="dupWarn" hidden></div>
   <section class="tablebox">
     <table>
       <thead><tr>
@@ -110,31 +114,49 @@ async function load(){
   }
 }
 
-function draw(eqs, now){
-  eqs.sort((a,b)=>b.total-a.total || (a.finished||Infinity)-(b.finished||Infinity));
+function hhmm(t){ return t? new Date(t).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "—"; }
+function cellsFor(e){
+  const ns=e.nodos||[];
+  return Array.from({length:NOD},(_,i)=>{
+    const n=ns[i]||{}; const cur=!n.done && (i===0 || (ns[i-1]&&ns[i-1].done));
+    if(n.done) return `<td><span class="cell done">✓<small>${n.pts} pts</small></span></td>`;
+    if(cur) return `<td><span class="cell now">P${(n.q||0)+1}/4<small>${n.pts||0} pts</small></span></td>`;
+    return `<td><span class="cell">—</span></td>`;
+  }).join("");
+}
+function rowFor(e, now, rank, extra){
+  const ns=e.nodos||[]; const errs=ns.reduce((a,n)=>a+(n.errors||0),0), hints=ns.reduce((a,n)=>a+(n.hints||0),0);
+  const pct=e.max?Math.round(e.total/e.max*100):0, since=now-(e.actualizado||now);
+  const act = e.finished ? "Terminó "+hhmm(e.finished) : (since>60000 ? `<span class="stale">Sin señal ${ago(since)}</span>` : "Activo");
+  return `<tr class="${rank===1?"first":""} ${extra?"dup":""}"><td class="rank">${extra?"⚠":rank}</td>
+    <td class="team">${extra?'<span class="stale">Otro dispositivo</span><br><span class="muted" style="font-weight:400">':""}${esc(e.equipo)}${extra?"</span>":""}
+      <div class="muted" style="font-weight:400;font-size:12px">Inició ${hhmm(e.started)}${e.dev?" · disp. "+esc(e.dev.slice(0,4)):""}</div></td>
+    <td><span class="pts">${e.total}</span><div class="bar"><i style="width:${pct}%"></i></div></td>
+    ${cellsFor(e)}
+    <td class="mono">${errs}</td><td class="mono">${hints}</td>
+    <td class="muted">${act}</td>
+    <td>${e.codigo?`<span class="badge">${esc(e.codigo)}</span>`:'<span class="muted">—</span>'}</td></tr>`;
+}
+function draw(regs, now){
+  // Agrupar por equipo; el registro principal es el de la partida iniciada más recientemente
+  const g={}; regs.forEach(r=>{ (g[r.id]=g[r.id]||[]).push(r); });
+  const teams=Object.values(g).map(list=>{
+    const act=r=>(r.finished||now-(r.actualizado||0)<60000)?1:0;
+    list.sort((a,b)=>act(b)-act(a) || b.total-a.total || (b.started||0)-(a.started||0));
+    return {main:list[0], others:list.slice(1)};
+  });
+  teams.sort((a,b)=>b.main.total-a.main.total || (a.main.finished||Infinity)-(b.main.finished||Infinity));
+  const eqs=teams.map(t=>t.main);
   $("kTeams").textContent=eqs.length;
   $("kDone").textContent=eqs.filter(e=>e.finished).length+" / "+eqs.length;
   $("kAvg").textContent=eqs.length?Math.round(eqs.reduce((a,e)=>a+e.total,0)/eqs.length):0;
   const errBy=Array(NOD).fill(0); eqs.forEach(e=>(e.nodos||[]).forEach((n,i)=>errBy[i]+=n.errors||0));
   const mx=Math.max(...errBy); $("kHard").textContent=mx>0?"N0"+(errBy.indexOf(mx)+1)+" · "+mx:"—";
+  const dups=teams.filter(t=>t.others.length).map(t=>t.main.id.replace("equipo-","Equipo "));
+  $("dupWarn").hidden=!dups.length;
+  $("dupWarn").innerHTML=dups.length?`<b>⚠ Más de un dispositivo en: ${dups.join(", ")}.</b> La fila principal es la del dispositivo activo con más avance; las filas marcadas con ⚠ son los otros dispositivos. Confirma con el equipo cuál es el que vale. Pide a esos equipos que trabajen en un solo dispositivo y cierren la actividad en los demás.`:"";
   if(!eqs.length){ $("rows").innerHTML='<tr><td colspan="14" class="empty">Esperando a que los equipos inicien la misión…</td></tr>'; return; }
-  $("rows").innerHTML=eqs.map((e,k)=>{
-    const ns=e.nodos||[]; const errs=ns.reduce((a,n)=>a+(n.errors||0),0), hints=ns.reduce((a,n)=>a+(n.hints||0),0);
-    const cells=Array.from({length:NOD},(_,i)=>{
-      const n=ns[i]||{}; const now=!n.done && (i===0 || (ns[i-1]&&ns[i-1].done));
-      if(n.done) return `<td><span class="cell done">✓<small>${n.pts} pts</small></span></td>`;
-      if(now) return `<td><span class="cell now">P${(n.q||0)+1}/4<small>${n.pts||0} pts</small></span></td>`;
-      return `<td><span class="cell">—</span></td>`;
-    }).join("");
-    const pct=e.max?Math.round(e.total/e.max*100):0, since=now-(e.actualizado||now);
-    return `<tr class="${k===0?"first":""}"><td class="rank">${k+1}</td>
-      <td class="team">${esc(e.equipo)}</td>
-      <td><span class="pts">${e.total}</span><div class="bar"><i style="width:${pct}%"></i></div></td>
-      ${cells}
-      <td class="mono">${errs}</td><td class="mono">${hints}</td>
-      <td class="${since>180000&&!e.finished?"stale":"muted"}">${e.finished?"Terminó":ago(since)}</td>
-      <td>${e.codigo?`<span class="badge">${esc(e.codigo)}</span>`:'<span class="muted">—</span>'}</td></tr>`;
-  }).join("");
+  $("rows").innerHTML=teams.map((t,k)=>rowFor(t.main,now,k+1,false)+t.others.map(o=>rowFor(o,now,0,true)).join("")).join("");
 }
 
 $("clear").onclick=async()=>{

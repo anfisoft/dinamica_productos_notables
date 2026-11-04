@@ -386,7 +386,11 @@ let view = { lvl: firstOpen(), selected: null, msg: null, confirmReset: false };
 
 function fresh(){ return { team:"", started:null, finished:null, levels: LEVELS.map(()=>({q:0, tries:0, hint:false, pts:0, errors:0, hints:0, done:false})) }; }
 function load(){ try{ const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} sync(); }
+function save(){ S.seq=(S.seq||0)+1; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} sync(); }
+// Identificador de este dispositivo, para que el panel detecte si dos dispositivos usan el mismo equipo
+const DEV=(()=>{ let d=null; try{ d=localStorage.getItem("opnotables.dev"); }catch(e){}
+  if(!d||!/^[a-z0-9]{8,20}$/.test(d)){ d=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); try{ localStorage.setItem("opnotables.dev",d); }catch(e){} }
+  return d; })();
 
 // Envío del avance al panel del docente (Netlify Function). Si no existe, la actividad sigue funcionando.
 const API = "/api/progreso";
@@ -394,7 +398,7 @@ function sync(){
   if(!S.teamId) return;
   const cur = S.levels.findIndex(l=>!l.done);
   const body = {
-    id:S.teamId, equipo:S.team, total:total(), max:MAX,
+    id:S.teamId, dev:DEV, seq:S.seq||0, equipo:S.team, total:total(), max:MAX,
     nodoActual: cur<0 ? LEVELS.length : cur+1,
     nodos:S.levels.map(l=>({pts:l.pts, done:l.done, q:l.q, errors:l.errors, hints:l.hints})),
     started:S.started, finished:S.finished, codigo: S.levels.every(l=>l.done) ? vcode() : null
@@ -598,6 +602,9 @@ function footer(){ return `<footer>Razonamiento Matemático · Ingeniería en Ci
 view.wrong=[];
 if(S.team && S.levels.every(l=>l.done)) view.lvl="final";
 render();
+// Reenvío periódico: el panel siempre termina mostrando el estado más reciente de este dispositivo
+sync(); setInterval(sync, 15000);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") sync(); });
 </script>
 </body>
 </html>
