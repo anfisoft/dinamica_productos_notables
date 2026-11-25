@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel del Examen Final</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0a1324; --panel:#101c33; --panel2:#15233f; --line:#243759;
+  --fg:#e7edf8; --muted:#93a3c4; --accent:#f3b445; --ink:#1a1204; --cyan:#62d3e8; --ok:#43d08f; --bad:#ff7070; --warn:#f39a45;
+  --f-display:"Chakra Petch","Trebuchet MS",sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Courier New",monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+[hidden]{display:none!important}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{background:var(--panel);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-block:14px}
+h1{font-family:var(--f-display);font-size:22px;margin:0}
+h2{font-family:var(--f-display);font-size:18px;margin:0 0 12px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.spacer{flex:1}
+main{padding-block:20px 40px;display:flex;flex-direction:column;gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 14px;font:inherit;cursor:pointer}
+.tab.on{background:var(--accent);border-color:var(--accent);color:var(--ink);font-weight:600}
+button{font:inherit;cursor:pointer;border-radius:7px;padding:9px 14px;border:1px solid var(--line);background:transparent;color:var(--fg)}
+button.pri{background:var(--accent);border-color:var(--accent);color:var(--ink);font-weight:600}
+button.okb{border-color:var(--ok);color:var(--ok)}
+button.danger{border-color:var(--bad);color:var(--bad)}
+button.sm{padding:4px 10px;font-size:13px}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input,textarea{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:7px;padding:9px 10px;font:inherit}
+textarea{width:100%;min-height:150px;font-family:var(--f-mono);font-size:12px}
+label.l{display:block;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.msg{font-size:14px;margin-top:10px}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.chip{display:inline-block;font-family:var(--f-mono);font-size:12px;border-radius:999px;padding:2px 9px;border:1px solid var(--line);white-space:nowrap}
+.chip.open{border-color:var(--ok);color:var(--ok)}.chip.closed{border-color:var(--bad);color:var(--bad)}
+.chip.curso{border-color:var(--cyan);color:var(--cyan)}.chip.env{border-color:var(--ok);color:var(--ok)}.chip.tiempo{border-color:var(--warn);color:var(--warn)}.chip.no{color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.kpi b{display:block;font-family:var(--f-mono);font-size:26px;color:var(--accent);font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted);font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:860px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--panel2);font-weight:500}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-mono)}
+.nota{font-family:var(--f-mono);font-size:17px;color:var(--accent);font-weight:600}
+.alert{color:var(--bad);font-weight:600}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:200px minmax(0,1fr) 60px;gap:10px;align-items:center;font-size:14px}
+@media (max-width:600px){.bar{grid-template-columns:110px minmax(0,1fr) 50px}}
+.bar .tr{height:14px;background:var(--bg);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.bar .tr i{display:block;height:100%;background:var(--cyan)}
+.bar .v{font-family:var(--f-mono);text-align:right}
+.detail td{background:var(--bg)}
+.ok{color:var(--ok)}.no{color:var(--bad)}
+sup{font-size:.72em;line-height:0;vertical-align:.55em}
+.confirm{margin-top:10px;border:1px solid var(--bad);border-radius:8px;padding:12px;background:var(--bg)}
+footer{color:var(--muted);font-size:12px;text-align:center;padding-block:4px 24px;font-family:var(--f-mono)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div><div class="eyebrow">Examen final · Factorización</div><h1>Panel del docente</h1></div>
+  <div class="spacer"></div>
+  <span id="estadoChip" class="chip" hidden></span>
+  <nav class="tabs" id="tabs" hidden>
+    <button class="tab on" data-t="vivo" type="button">En vivo</button>
+    <button class="tab" data-t="reporte" type="button">Reporte final</button>
+    <button class="tab" data-t="config" type="button">Configuración</button>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <!-- Acceso -->
+  <section class="card" id="login" style="max-width:440px">
+    <h2>Entrar al panel</h2>
+    <form id="fLogin"><label class="l" for="clave">Clave del docente</label>
+      <div class="row"><input id="clave" type="password" autocomplete="current-password" style="flex:1"><button class="pri" type="submit">Entrar</button></div>
+      <div class="msg bad" id="loginMsg"></div></form>
+  </section>
+
+  <!-- En vivo -->
+  <section id="vivo" hidden>
+    <div class="kpis" id="kpisVivo"></div>
+    <div class="card" style="margin-top:18px">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><h2 style="margin:0">Estudiantes</h2><span class="chip" id="act">Actualizando…</span></div>
+      <div class="tbl"><table><thead><tr><th>Matrícula</th><th>Nombre</th><th>Estado</th><th>Nivel</th><th>Respondidas</th><th>Pistas</th><th>Salidas de la pestaña</th><th>Tiempo</th><th>Nota /30</th><th></th></tr></thead><tbody id="rowsVivo"></tbody></table></div>
+      <p class="msg" id="vivoMsg"></p>
+    </div>
+  </section>
+
+  <!-- Reporte -->
+  <section id="reporte" hidden>
+    <div class="kpis" id="kpisRep"></div>
+    <div class="grid2" style="margin-top:18px">
+      <div class="card"><h2>Distribución de notas</h2><div class="bars" id="dist"></div></div>
+      <div class="card"><h2>Rendimiento por nivel</h2><div class="bars" id="porNivel"></div><p class="msg" id="nivelNota" style="color:var(--muted)"></p></div>
+    </div>
+    <div class="card" style="margin-top:18px"><h2>Preguntas con más errores</h2><div class="bars" id="fallas"></div></div>
+    <div class="card" style="margin-top:18px">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><h2 style="margin:0">Calificaciones</h2>
+        <div class="row"><button class="pri" type="button" id="dlNotas">Descargar reporte (Excel)</button><button type="button" id="dlDetalle">Descargar detalle por pregunta</button></div></div>
+      <div class="tbl"><table><thead><tr><th>Matrícula</th><th>Nombre</th><th>Estado</th><th>N1</th><th>N2</th><th>N3</th><th>N4</th><th>N5</th><th>N6</th><th>Nota /30</th><th>Pistas</th><th>Errores</th><th>Salidas</th><th>Duración</th><th></th></tr></thead><tbody id="rowsRep"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- Configuración -->
+  <section id="config" hidden>
+    <div class="grid2">
+      <div class="card">
+        <h2>Control del examen</h2>
+        <div class="row">
+          <div><label class="l" for="codigo">Código de acceso</label><input id="codigo" maxlength="12" style="text-transform:uppercase;width:160px;font-family:var(--f-mono)"></div>
+          <button type="button" id="genCod">Generar código</button>
+          <div><label class="l" for="dur">Duración (min)</label><input id="dur" type="number" min="10" max="240" style="width:100px"></div>
+          <button type="button" class="pri" id="guardarCfg">Guardar</button>
+        </div>
+        <p style="color:var(--muted);font-size:14px">Anuncia el código en el aula el día del examen. Sin él, nadie puede ver nombres ni entrar.</p>
+        <div class="row" style="margin-top:6px"><button type="button" class="okb" id="abrir">Abrir examen</button><button type="button" class="danger" id="cerrar">Cerrar examen</button></div>
+        <div id="cerrarConf" class="confirm" hidden>Al cerrar, los exámenes en curso se envían con lo que tengan respondido y nadie más puede entrar.<div class="row" style="margin-top:10px"><button type="button" class="danger" id="cerrarSi">Cerrar y enviar los pendientes</button><button type="button" id="cerrarNo">Cancelar</button></div></div>
+        <div class="msg" id="cfgMsg"></div>
+      </div>
+      <div class="card">
+        <h2>Lista de estudiantes</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:0" id="listaInfo">Cargando…</p>
+        <label class="l" for="pega">Pega aquí el listado de la sección</label>
+        <textarea id="pega" placeholder="Copia el listado del sistema (matrícula y nombre). Los teléfonos y correos se descartan en tu computadora y no se envían."></textarea>
+        <div class="row" style="margin-top:10px"><button type="button" id="procesar">Revisar listado</button><button type="button" class="pri" id="guardarLista" disabled>Guardar lista</button></div>
+        <div class="msg" id="listaMsg"></div>
+        <div class="tbl" id="prev" hidden style="margin-top:10px;max-height:260px;overflow:auto"><table style="min-width:0"><thead><tr><th>Matrícula</th><th>Nombre</th></tr></thead><tbody id="prevRows"></tbody></table></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <h2>Borrar los exámenes</h2>
+      <p style="color:var(--muted);font-size:14px;margin-top:0">Borra todos los exámenes guardados (respuestas y notas). La lista de estudiantes se mantiene. Descarga el reporte antes de hacerlo.</p>
+      <div class="row"><div><label class="l" for="borrarTxt">Escribe BORRAR para confirmar</label><input id="borrarTxt" style="width:180px"></div><button type="button" class="danger" id="borrar">Borrar todos los exámenes</button></div>
+      <div class="msg" id="borrarMsg"></div>
+    </div>
+  </section>
+</main>
+<footer>Razonamiento Matemático · Ingeniería en Ciberseguridad · Elaborado por Juan Carlos Fdez. PhD</footer>
+
+<script>
+const API = "/api/examen";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const SUPS = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9" };
+const exh = (t) => esc(t).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (m) => "<sup>" + [...m].map((c) => SUPS[c]).join("") + "</sup>");
+const NIV = ["Caso I · Factor común", "Caso II · Agrupación", "Caso III · Trinomio cuadrado perfecto", "Caso IV · Diferencia de cuadrados", "Caso VI · x² + bx + c", "Integrador"];
+let CLAVE = ""; try { CLAVE = sessionStorage.getItem("examen.clave") || ""; } catch (e) {}
+let DATA = null, abierto = {}, tab = "vivo", listaNueva = null;
+
+async function api(body) {
+  const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", "x-clave": CLAVE }, body: JSON.stringify(body) });
+  let d = {}; try { d = await r.json(); } catch (e) {}
+  if (!r.ok) { const e = new Error(d.error || "No se pudo conectar con el servidor."); e.status = r.status; throw e; }
+  return d;
+}
+
+/* ---------- Acceso ---------- */
+$("fLogin").addEventListener("submit", async (e) => {
+  e.preventDefault(); CLAVE = $("clave").value;
+  try { await api({ accion: "config" }); try { sessionStorage.setItem("examen.clave", CLAVE); } catch (er) {} entrar(); }
+  catch (er) { $("loginMsg").textContent = er.status === 401 ? "Clave incorrecta." : er.message; }
+});
+function entrar() { $("login").hidden = true; $("tabs").hidden = false; mostrar(tab); cargar(); setInterval(cargar, 10000); cargarConfig(); }
+document.querySelectorAll(".tab").forEach((b) => b.onclick = () => mostrar(b.dataset.t));
+function mostrar(t) { tab = t; ["vivo", "reporte", "config"].forEach((s) => ($(s).hidden = s !== t)); document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("on", b.dataset.t === t)); if (DATA) pintar(); }
+
+/* ---------- Datos ---------- */
+const notaDe = (ex) => ex.preguntas.reduce((a, q) => a + (q.puntos || 0), 0);
+const nivelPts = (ex, n) => ex.preguntas.filter((q) => q.nivel === n).reduce((a, q) => a + (q.puntos || 0), 0);
+const pistasDe = (ex) => ex.preguntas.reduce((a, q) => a + q.pistasUsadas, 0);
+const erroresDe = (ex) => ex.preguntas.filter((q) => q.respuesta !== null && q.respuesta !== "—" && !q.ok).length;
+const respondidas = (ex) => ex.preguntas.filter((q) => q.respuesta !== null && q.respuesta !== "—").length;
+const estadoDe = (ex) => !ex ? ["no", "No ha entrado"] : !ex.fin ? ["curso", "En curso"] : ex.motivo === "enviado" ? ["env", "Enviado"] : ex.motivo === "tiempo" ? ["tiempo", "Tiempo agotado"] : ["tiempo", "Cerrado por el docente"];
+const mins = (ms) => Math.max(0, Math.round(ms / 60000));
+const hhmm = (t) => t ? new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+
+async function cargar() {
+  try { DATA = await api({ accion: "resultados" }); $("act").textContent = "Actualizado " + new Date().toLocaleTimeString(); pintar(); }
+  catch (er) { $("act").textContent = "Sin conexión"; if (er.status === 401) location.reload(); }
+}
+function filas() { // une la lista oficial con los exámenes
+  const byM = {}; DATA.examenes.forEach((e) => (byM[e.matricula] = e));
+  const out = Object.entries(DATA.lista).map(([m, n]) => ({ m, n, ex: byM[m] || null }));
+  DATA.examenes.forEach((e) => { if (!DATA.lista[e.matricula]) out.push({ m: e.matricula, n: e.nombre, ex: e }); });
+  return out.sort((a, b) => a.n.localeCompare(b.n, "es"));
+}
+
+function pintar() {
+  if (!DATA) return;
+  const c = DATA.config; const ch = $("estadoChip"); ch.hidden = false;
+  ch.className = "chip " + (c.abierto ? "open" : "closed"); ch.textContent = c.abierto ? `Abierto · código ${c.codigo}` : "Cerrado";
+  if (tab === "vivo") pintarVivo(); if (tab === "reporte") pintarReporte();
+}
+
+function pintarVivo() {
+  const F = filas(), now = DATA.ahora;
+  const exs = F.filter((f) => f.ex), env = exs.filter((f) => f.ex.fin);
+  $("kpisVivo").innerHTML = `
+    <div class="kpi"><span>En la lista</span><b>${F.length}</b></div>
+    <div class="kpi"><span>Han entrado</span><b>${exs.length}</b></div>
+    <div class="kpi"><span>En curso</span><b>${exs.length - env.length}</b></div>
+    <div class="kpi"><span>Enviados</span><b>${env.length}</b></div>
+    <div class="kpi"><span>Promedio enviados</span><b>${env.length ? Math.round(env.reduce((a, f) => a + notaDe(f.ex), 0) / env.length) : "—"}</b></div>`;
+  $("rowsVivo").innerHTML = F.map((f) => {
+    const [cl, txt] = estadoDe(f.ex); const ex = f.ex;
+    if (!ex) return `<tr><td class="n">${esc(f.m)}</td><td>${esc(f.n)}</td><td><span class="chip no">${txt}</span></td><td colspan="7"></td></tr>`;
+    const resp = respondidas(ex), q = ex.preguntas.find((p) => p.respuesta === null);
+    const tiempo = ex.fin ? `${mins(ex.fin - ex.inicio)} min` : `${mins(now - ex.inicio)} min · quedan ${mins(ex.limite - now)}`;
+    return `<tr><td class="n">${esc(f.m)}</td><td>${esc(f.n)}</td><td><span class="chip ${cl}">${txt}</span>${ex.reingresos ? ` <span class="chip">${ex.reingresos} reingreso(s)</span>` : ""}</td>
+      <td>${ex.fin ? "—" : q ? q.nivel + " de 6" : "—"}</td><td class="n">${resp} / ${ex.preguntas.length}</td><td class="n">${pistasDe(ex)}</td>
+      <td class="n ${ex.salidas.length >= 3 ? "alert" : ""}">${ex.salidas.length}</td><td>${tiempo}</td><td class="nota">${notaDe(ex)}</td>
+      <td>${ex.fin ? "" : `<button class="sm" type="button" data-re="${esc(f.m)}">${ex.reingreso ? "Reingreso autorizado" : "Permitir reingreso"}</button>`}</td></tr>`;
+  }).join("") || `<tr><td colspan="10" style="color:var(--muted)">Todavía no hay lista de estudiantes. Súbela en Configuración.</td></tr>`;
+  document.querySelectorAll("[data-re]").forEach((b) => b.onclick = async () => {
+    try { await api({ accion: "reingreso", matricula: b.dataset.re }); $("vivoMsg").className = "msg ok"; $("vivoMsg").textContent = `Reingreso autorizado para ${b.dataset.re}. El estudiante puede entrar desde otro dispositivo con su matrícula y el código.`; cargar(); }
+    catch (er) { $("vivoMsg").className = "msg bad"; $("vivoMsg").textContent = er.message; }
+  });
+}
+
+function barra(label, val, max, txt) { const pct = max ? Math.round(val / max * 100) : 0; return `<div class="bar"><span>${label}</span><div class="tr"><i style="width:${pct}%"></i></div><span class="v">${txt ?? val}</span></div>`; }
+function resumen() {
+  const F = filas(), env = F.filter((f) => f.ex && f.ex.fin), notas = env.map((f) => notaDe(f.ex)).sort((a, b) => a - b);
+  const prom = notas.length ? Math.round(notas.reduce((a, b) => a + b, 0) / notas.length) : null;
+  const med = notas.length ? Math.round(notas.length % 2 ? notas[(notas.length - 1) / 2] : (notas[notas.length / 2 - 1] + notas[notas.length / 2]) / 2) : null;
+  const rangos = [["0 – 14", 0, 14], ["15 – 19", 15, 19], ["20 – 24", 20, 24], ["25 – 30", 25, 30]].map(([l, a, b]) => [l, notas.filter((n) => n >= a && n <= b).length]);
+  const porNivel = NIV.map((t, i) => [t, env.length ? env.reduce((a, f) => a + nivelPts(f.ex, i + 1), 0) / env.length : 0]);
+  const fallas = {};
+  env.forEach((f) => f.ex.preguntas.forEach((q, i) => { const k = q.id; fallas[k] = fallas[k] || { id: k, nivel: q.nivel, num: i + 1, pts: q.pts, total: 0, mal: 0, pistas: 0 }; fallas[k].total++; if (!q.ok) fallas[k].mal++; fallas[k].pistas += q.pistasUsadas; }));
+  const fl = Object.values(fallas).sort((a, b) => b.mal / b.total - a.mal / a.total || a.num - b.num);
+  return { F, env, notas, prom, med, rangos, porNivel, fl, pistasProm: env.length ? (env.reduce((a, f) => a + pistasDe(f.ex), 0) / env.length) : 0, salidas: env.filter((f) => f.ex.salidas.length >= 3).length };
+}
+function pintarReporte() {
+  const R = resumen();
+  $("kpisRep").innerHTML = `
+    <div class="kpi"><span>Presentados</span><b>${R.env.length} / ${R.F.length}</b></div>
+    <div class="kpi"><span>Promedio /30</span><b>${R.prom ?? "—"}</b></div>
+    <div class="kpi"><span>Mediana</span><b>${R.med ?? "—"}</b></div>
+    <div class="kpi"><span>Nota más alta</span><b>${R.notas.length ? R.notas[R.notas.length - 1] : "—"}</b></div>
+    <div class="kpi"><span>Nota más baja</span><b>${R.notas.length ? R.notas[0] : "—"}</b></div>
+    <div class="kpi"><span>Pistas por estudiante</span><b>${R.env.length ? Math.round(R.pistasProm) : "—"}</b></div>
+    <div class="kpi"><span>3 o más salidas</span><b>${R.salidas}</b></div>`;
+  const maxR = Math.max(1, ...R.rangos.map((r) => r[1]));
+  $("dist").innerHTML = R.rangos.map(([l, n]) => barra(l + " pts", n, maxR, n + " est.")).join("");
+  $("porNivel").innerHTML = R.porNivel.map(([t, v]) => barra(t, v, 5, (Math.round(v * 10) / 10).toString().replace(".", ",") + " / 5")).join("");
+  const peor = R.env.length ? R.porNivel.reduce((a, b) => (b[1] < a[1] ? b : a)) : null;
+  $("nivelNota").textContent = peor ? `El nivel con menor rendimiento es ${peor[0]}.` : "";
+  $("fallas").innerHTML = R.env.length ? R.fl.slice(0, 6).map((f) => barra(`Nivel ${f.nivel} · pregunta ${f.num} (${f.pts} pt${f.pts > 1 ? "s" : ""})`, f.mal, f.total, Math.round(f.mal / f.total * 100) + " %")).join("") + `<p style="color:var(--muted);font-size:13px;margin:4px 0 0">Porcentaje de estudiantes que la respondieron mal. Cada estudiante recibe números distintos, pero la pregunta evalúa lo mismo.</p>` : `<p style="color:var(--muted)">Aún no hay exámenes enviados.</p>`;
+  $("rowsRep").innerHTML = R.F.map((f) => {
+    const ex = f.ex, [cl, txt] = estadoDe(ex);
+    if (!ex) return `<tr><td class="n">${esc(f.m)}</td><td>${esc(f.n)}</td><td><span class="chip no">${txt}</span></td><td colspan="12"></td></tr>`;
+    const det = abierto[f.m] ? `<tr class="detail"><td colspan="15"><div class="tbl"><table style="min-width:720px"><thead><tr><th>#</th><th>Nivel</th><th>Pregunta</th><th>Respuesta del estudiante</th><th>Respuesta correcta</th><th>Pistas</th><th>Puntos</th></tr></thead><tbody>${ex.preguntas.map((q, i) => `<tr><td class="n">${i + 1}</td><td>${q.nivel}</td><td>${exh(q.enunciado)}</td><td class="${q.ok ? "ok" : "no"}">${exh(q.respuesta ?? "—")}</td><td>${exh(q.correcta)}</td><td class="n">${q.pistasUsadas}</td><td class="n">${q.puntos ?? 0} / ${q.pts}</td></tr>`).join("")}</tbody></table></div></td></tr>` : "";
+    return `<tr><td class="n">${esc(f.m)}</td><td>${esc(f.n)}</td><td><span class="chip ${cl}">${txt}</span></td>
+      ${[1, 2, 3, 4, 5, 6].map((n) => `<td class="n">${nivelPts(ex, n)}</td>`).join("")}
+      <td class="nota">${notaDe(ex)}</td><td class="n">${pistasDe(ex)}</td><td class="n">${erroresDe(ex)}</td><td class="n ${ex.salidas.length >= 3 ? "alert" : ""}">${ex.salidas.length}</td>
+      <td>${ex.fin ? mins(ex.fin - ex.inicio) + " min" : "en curso"}</td><td><button class="sm" type="button" data-det="${esc(f.m)}">${abierto[f.m] ? "Ocultar" : "Ver respuestas"}</button></td></tr>${det}`;
+  }).join("");
+  document.querySelectorAll("[data-det]").forEach((b) => b.onclick = () => { abierto[b.dataset.det] = !abierto[b.dataset.det]; pintarReporte(); });
+}
+
+/* ---------- Descargas (CSV para Excel en español: separador ; ) ---------- */
+const cell = (v) => { const s = String(v ?? ""); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function descargar(nombre, filas) {
+  const txt = "﻿" + filas.map((r) => r.map(cell).join(";")).join("\r\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([txt], { type: "text/csv;charset=utf-8" })); a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+}
+const fecha = () => new Date().toISOString().slice(0, 10);
+$("dlNotas").onclick = () => {
+  const R = resumen();
+  const rows = [["Matrícula", "Nombre", "Estado", ...NIV.map((t, i) => `N${i + 1} ${t} (/5)`), "Nota (/30)", "Pistas usadas", "Respuestas incorrectas", "Salidas de la pestaña", "Inicio", "Fin", "Duración (min)"]];
+  R.F.forEach((f) => { const ex = f.ex, [, txt] = estadoDe(ex);
+    rows.push(ex ? [f.m, f.n, txt, ...[1, 2, 3, 4, 5, 6].map((n) => nivelPts(ex, n)), notaDe(ex), pistasDe(ex), erroresDe(ex), ex.salidas.length, hhmm(ex.inicio), hhmm(ex.fin), ex.fin ? mins(ex.fin - ex.inicio) : ""] : [f.m, f.n, txt]); });
+  rows.push([], ["RESUMEN"], ["Presentados", `${R.env.length} de ${R.F.length}`], ["Promedio (/30)", R.prom ?? ""], ["Mediana", R.med ?? ""], ["Nota más alta", R.notas.length ? R.notas[R.notas.length - 1] : ""], ["Nota más baja", R.notas.length ? R.notas[0] : ""]);
+  R.rangos.forEach(([l, n]) => rows.push([`Notas de ${l}`, n]));
+  R.porNivel.forEach(([t, v]) => rows.push([`Promedio ${t} (/5)`, (Math.round(v * 10) / 10).toString().replace(".", ",")]));
+  descargar(`examen-final-notas-${fecha()}.csv`, rows);
+};
+$("dlDetalle").onclick = () => {
+  const rows = [["Matrícula", "Nombre", "Pregunta", "Nivel", "Enunciado", "Respuesta del estudiante", "Respuesta correcta", "¿Correcta?", "Pistas", "Puntos", "Valor"]];
+  filas().forEach((f) => f.ex && f.ex.preguntas.forEach((q, i) => rows.push([f.m, f.n, i + 1, q.nivel, q.enunciado, q.respuesta ?? "", q.correcta, q.ok ? "Sí" : "No", q.pistasUsadas, q.puntos ?? 0, q.pts])));
+  descargar(`examen-final-detalle-${fecha()}.csv`, rows);
+};
+
+/* ---------- Configuración ---------- */
+async function cargarConfig() {
+  try { const { config } = await api({ accion: "config" }); $("codigo").value = config.codigo; $("dur").value = config.duracionMin; } catch (er) {}
+  try { const { lista } = await api({ accion: "verLista" }); const n = Object.keys(lista).length; $("listaInfo").textContent = n ? `Lista guardada: ${n} estudiantes.` : "Todavía no has guardado la lista."; } catch (er) {}
+}
+const cfgMsg = (t, ok) => { $("cfgMsg").className = "msg " + (ok ? "ok" : "bad"); $("cfgMsg").textContent = t; };
+$("genCod").onclick = () => { const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; const r = new Uint32Array(6); crypto.getRandomValues(r); r.forEach((v) => (s += A[v % A.length])); $("codigo").value = s; };
+$("guardarCfg").onclick = async () => { try { await api({ accion: "guardarConfig", codigo: $("codigo").value, duracionMin: parseInt($("dur").value, 10) }); cfgMsg("Configuración guardada.", true); cargar(); } catch (er) { cfgMsg(er.message); } };
+$("abrir").onclick = async () => { try { await api({ accion: "guardarConfig", codigo: $("codigo").value, duracionMin: parseInt($("dur").value, 10), abierto: true }); cfgMsg("Examen abierto. Los estudiantes ya pueden entrar con el código.", true); cargar(); } catch (er) { cfgMsg(er.message); } };
+$("cerrar").onclick = () => ($("cerrarConf").hidden = false);
+$("cerrarNo").onclick = () => ($("cerrarConf").hidden = true);
+$("cerrarSi").onclick = async () => { $("cerrarConf").hidden = true; try { await api({ accion: "cerrar" }); cfgMsg("Examen cerrado. Los pendientes se enviaron con lo que tenían respondido.", true); cargar(); } catch (er) { cfgMsg(er.message); } };
+
+// El listado se procesa aquí: solo se envían matrícula y nombre. Teléfonos y correos nunca salen de esta computadora.
+function parsear(txt) {
+  const out = [], vistos = new Set();
+  txt.split(/\r?\n/).forEach((line) => {
+    const m = line.match(/(\d{4}-\d{4})/); if (!m || /@/.test(line.slice(0, m.index))) return;
+    const resto = line.slice(m.index + m[1].length);
+    const partes = resto.split(/\t+|;|,|\s{2,}/).map((s) => s.trim()).filter(Boolean);
+    const nombre = partes.find((p) => /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' .-]+$/.test(p) && p.split(" ").length >= 2);
+    if (nombre && !vistos.has(m[1])) { vistos.add(m[1]); out.push({ matricula: m[1], nombre: nombre.replace(/\s+/g, " ").toUpperCase() }); }
+  });
+  return out;
+}
+$("procesar").onclick = () => {
+  listaNueva = parsear($("pega").value);
+  $("prev").hidden = !listaNueva.length; $("guardarLista").disabled = !listaNueva.length;
+  $("prevRows").innerHTML = listaNueva.map((e) => `<tr><td class="n">${esc(e.matricula)}</td><td>${esc(e.nombre)}</td></tr>`).join("");
+  $("listaMsg").className = "msg " + (listaNueva.length ? "ok" : "bad");
+  $("listaMsg").textContent = listaNueva.length ? `Se encontraron ${listaNueva.length} estudiantes. Revisa la tabla y pulsa Guardar lista.` : "No se encontró ninguna matrícula con el formato 2026-0000.";
+};
+$("guardarLista").onclick = async () => {
+  try { const d = await api({ accion: "guardarLista", lista: listaNueva }); $("listaMsg").className = "msg ok"; $("listaMsg").textContent = `Lista guardada: ${d.total} estudiantes.`; $("pega").value = ""; $("prev").hidden = true; $("guardarLista").disabled = true; cargarConfig(); cargar(); }
+  catch (er) { $("listaMsg").className = "msg bad"; $("listaMsg").textContent = er.message; }
+};
+$("borrar").onclick = async () => {
+  if ($("borrarTxt").value.trim() !== "BORRAR") { $("borrarMsg").className = "msg bad"; $("borrarMsg").textContent = "Escribe BORRAR para confirmar."; return; }
+  try { const d = await api({ accion: "borrarExamenes" }); $("borrarMsg").className = "msg ok"; $("borrarMsg").textContent = `Se borraron ${d.borrados} exámenes.`; $("borrarTxt").value = ""; cargar(); }
+  catch (er) { $("borrarMsg").className = "msg bad"; $("borrarMsg").textContent = er.message; }
+};
+
+if (CLAVE) api({ accion: "config" }).then(entrar).catch(() => {});
+</script>
+</body>
+</html>

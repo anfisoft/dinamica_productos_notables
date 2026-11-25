@@ -1,0 +1,27 @@
+EXAMEN FINAL DE FACTORIZACIÓN: instrucciones
+
+Archivos nuevos (se agregan al mismo repositorio dinamica_productos_notables):
+  examen/index.html                 Página del estudiante
+  examen/docente.html               Panel del docente
+  netlify/functions/examen.mjs      Servidor: genera, califica y guarda los exámenes
+
+Enlaces cuando esté publicado:
+  Estudiantes:  https://fdezjuancarlos-productos-notables.netlify.app/examen/
+  Docente:      https://fdezjuancarlos-productos-notables.netlify.app/examen/docente.html
+
+El panel usa la misma clave DOCENTE_CLAVE que ya configuraste en Netlify.
+
+Antes del examen (panel > Configuración):
+  1. Pega el listado de la sección, pulsa "Revisar listado" y luego "Guardar lista".
+     Los teléfonos y correos se descartan en tu computadora; solo se guardan matrícula y nombre.
+  2. Pulsa "Generar código", deja la duración en 120 y pulsa "Guardar".
+     El examen sigue cerrado hasta que pulses "Abrir examen".
+
+El día del examen:
+  3. Pulsa "Abrir examen" y anuncia el código en el aula.
+  4. Sigue el avance en "En vivo". Si un estudiante cambia de computadora, pulsa "Permitir reingreso".
+  5. Al terminar, pulsa "Cerrar examen": los que no enviaron se envían con lo que tengan respondido.
+  6. En "Reporte final", descarga el reporte (Excel) y el detalle por pregunta.
+
+Después:
+  7. Cuando tengas guardados los reportes, borra los exámenes (Configuración > Borrar).

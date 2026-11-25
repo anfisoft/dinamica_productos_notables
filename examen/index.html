@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Examen Final · Factorización</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0a1324; --panel:#101c33; --panel2:#15233f; --line:#243759;
+  --fg:#e7edf8; --muted:#93a3c4; --accent:#f3b445; --ink:#1a1204;
+  --cyan:#62d3e8; --ok:#43d08f; --bad:#ff7070;
+  --f-display:"Chakra Petch","Trebuchet MS",sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Courier New",monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font-family:var(--f-body);font-size:16px;line-height:1.55;min-height:100vh;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;background-attachment:fixed}
+body::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,transparent 0%,var(--bg) 70%);pointer-events:none;z-index:-1}
+[hidden]{display:none!important}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,label.opt:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.btn{background:var(--accent);color:var(--ink);border:0;border-radius:8px;padding:12px 20px;font-family:var(--f-display);font-weight:700;font-size:16px;letter-spacing:.02em}
+.btn:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.5;cursor:default;filter:none}
+.btn.ghost{background:transparent;color:var(--cyan);border:1px solid var(--cyan)}
+.btn.danger{background:var(--bad);color:#1a0505}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field input{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:12px;font-size:17px;font-family:var(--f-mono);width:100%}
+.field input[readonly]{color:var(--accent);font-family:var(--f-display);font-weight:600;border-style:dashed}
+.msg{border-radius:8px;padding:10px 14px;font-size:15px}
+.msg.bad{background:rgba(255,112,112,.1);border:1px solid rgba(255,112,112,.45)}
+.msg.info{background:rgba(98,211,232,.08);border:1px solid rgba(98,211,232,.35)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+/* acceso */
+.login{max-width:560px;margin:8vh auto 40px;display:flex;flex-direction:column;gap:18px}
+.login h1{font-size:clamp(30px,6vw,44px);line-height:1.05}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.rules div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.rules b{display:block;color:var(--fg);font-family:var(--f-display);font-size:16px}
+/* barra */
+.top{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-block:10px}
+.who{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.who b{font-family:var(--f-display);font-size:16px}
+.who span{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.spacer{flex:1}
+.timer{font-family:var(--f-mono);font-size:24px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.timer.low{color:var(--bad)}
+/* mapa */
+.map{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:18px 0 14px}
+@media (max-width:700px){.map{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.node{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--muted);min-width:0}
+.node .n{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em}
+.node .t{display:block;font-family:var(--f-display);font-size:13px;font-weight:600;line-height:1.2;margin-top:2px}
+.node .bar{height:4px;background:var(--line);border-radius:2px;margin-top:8px;overflow:hidden}
+.node .bar i{display:block;height:100%;background:var(--cyan)}
+.node.done{border-color:var(--ok);color:var(--fg)}.node.done .bar i{background:var(--ok)}
+.node.now{border-color:var(--accent);color:var(--fg);background:var(--panel2)}
+.node.lock{opacity:.5}
+/* pregunta */
+.qhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline;margin-bottom:12px}
+.pts{font-family:var(--f-mono);font-size:13px;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 10px}
+.qtext{font-size:19px;font-weight:500;margin:0 0 18px;max-width:70ch}
+.math,.qtext .m{font-family:var(--f-mono)}
+sup{font-size:.72em;line-height:0;vertical-align:.55em}
+.opts{display:flex;flex-direction:column;gap:8px}
+label.opt{display:flex;gap:12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;font-family:var(--f-mono);font-size:17px}
+label.opt:hover{border-color:var(--cyan)}
+label.opt input{accent-color:var(--accent);width:18px;height:18px;flex:none}
+label.opt.sel{border-color:var(--accent);background:rgba(243,180,69,.08)}
+.numin{max-width:260px}
+.hints{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+.hint{background:rgba(98,211,232,.08);border:1px solid rgba(98,211,232,.35);border-radius:8px;padding:10px 14px;font-size:15px}
+.hint b{color:var(--cyan)}
+.confirm{margin-top:14px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;padding:12px 14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.warn{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--bad);padding:10px 16px;border-radius:8px;font-size:14px;z-index:9;max-width:calc(100% - 32px)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--ok);padding:10px 16px;border-radius:8px;font-family:var(--f-mono);font-size:14px;z-index:9;max-width:calc(100% - 32px)}
+.done{max-width:620px;margin:10vh auto;text-align:center}
+.done .big{font-family:var(--f-display);font-size:clamp(32px,6vw,48px);color:var(--ok)}
+footer{color:var(--muted);font-size:12px;text-align:center;padding-block:24px;font-family:var(--f-mono)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast" hidden></div>
+<div id="warn" class="warn" hidden></div>
+<footer>Razonamiento Matemático · Ingeniería en Ciberseguridad · Elaborado por Juan Carlos Fdez. PhD</footer>
+<script>
+const API = "/api/examen";
+const SKEY = "examenFinal.sesion";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const SUPS = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9" };
+const ex = (t) => esc(t).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (m) => "<sup>" + [...m].map((c) => SUPS[c]).join("") + "</sup>");
+
+let S = { matricula: "", codigo: "", nombre: "", token: "", estado: null, offset: 0, salidas: 0 };
+let ui = { sel: null, confirm: null, error: "", busy: false };
+try { const s = JSON.parse(localStorage.getItem(SKEY) || "null"); if (s && s.matricula) { S.matricula = s.matricula; S.token = s.token || ""; } } catch (e) {}
+const guardar = () => { try { localStorage.setItem(SKEY, JSON.stringify({ matricula: S.matricula, token: S.token })); } catch (e) {} };
+
+async function api(body) {
+  const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  let d = {}; try { d = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(d.error || "No se pudo conectar con el servidor. Intenta de nuevo.");
+  return d;
+}
+function toast(t) { const el = $("toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (el.hidden = true), 2600); }
+
+/* ---------- Pantalla de acceso ---------- */
+function vistaAcceso() {
+  $("app").innerHTML = `<div class="wrap"><section class="login">
+    <div class="eyebrow">Razonamiento Matemático · Examen final</div>
+    <h1>Misión final: factorización</h1>
+    <p style="color:var(--muted);margin:0">Examen individual de 6 niveles: los casos I, II, III, IV y VI, y un nivel final integrador. Vale 30 puntos.</p>
+    <form id="fAcceso" class="card" style="display:flex;flex-direction:column;gap:14px" novalidate>
+      <div class="field"><label for="mat">Matrícula</label><input id="mat" inputmode="numeric" autocomplete="off" placeholder="2026-0000" maxlength="9" value="${esc(S.matricula)}"></div>
+      <div class="field"><label for="cod">Código de acceso (lo da el docente)</label><input id="cod" autocomplete="off" maxlength="12" value="${esc(S.codigo)}" style="text-transform:uppercase"></div>
+      <div class="field" ${S.nombre ? "" : "hidden"}><label for="nom">Nombre y apellidos</label><input id="nom" readonly value="${esc(S.nombre)}"></div>
+      ${ui.error ? `<div class="msg bad" role="alert">${esc(ui.error)}</div>` : ""}
+      <div class="row">${S.nombre
+        ? `<button class="btn" type="button" id="bInicio" ${ui.busy ? "disabled" : ""}>Comenzar examen</button><button class="btn ghost" type="button" id="bOtro">No soy yo</button>`
+        : `<button class="btn" type="submit" ${ui.busy ? "disabled" : ""}>Verificar matrícula</button>`}</div>
+    </form>
+    <div class="rules">
+      <div><b>120 minutos</b>El tiempo corre desde que comienzas y el examen se envía solo al terminar.</div>
+      <div><b>Una respuesta por pregunta</b>Al enviarla no podrás cambiarla. No verás si fue correcta.</div>
+      <div><b>Pistas: −1 punto cada una</b>Solo en preguntas de 2 puntos. Te dan información concreta del ejercicio.</div>
+      <div><b>Sin salir de la ventana</b>Cada vez que salgas de esta pestaña queda registrado para el docente.</div>
+    </div>
+  </section></div>`;
+  const mat = $("mat");
+  mat.addEventListener("input", () => { let v = mat.value.replace(/[^\d]/g, "").slice(0, 8); if (v.length > 4) v = v.slice(0, 4) + "-" + v.slice(4); mat.value = v; });
+  $("fAcceso").addEventListener("submit", async (e) => {
+    e.preventDefault(); S.matricula = mat.value.trim(); S.codigo = $("cod").value.trim().toUpperCase();
+    if (!/^\d{4}-\d{4}$/.test(S.matricula)) { ui.error = "Escribe tu matrícula completa, por ejemplo 2026-0123."; return vistaAcceso(); }
+    if (!S.codigo) { ui.error = "Escribe el código de acceso que te dio el docente."; return vistaAcceso(); }
+    ui.busy = true; ui.error = ""; vistaAcceso();
+    try { const d = await api({ accion: "buscar", matricula: S.matricula, codigo: S.codigo }); S.nombre = d.nombre; }
+    catch (er) { ui.error = er.message; }
+    ui.busy = false; vistaAcceso();
+  });
+  if ($("bOtro")) $("bOtro").onclick = () => { S.nombre = ""; S.token = ""; ui.error = ""; vistaAcceso(); };
+  if ($("bInicio")) $("bInicio").onclick = iniciar;
+}
+
+async function iniciar() {
+  ui.busy = true; ui.error = ""; vistaAcceso();
+  try {
+    const d = await api({ accion: "iniciar", matricula: S.matricula, codigo: S.codigo, token: S.token });
+    ui.busy = false;
+    if (d.enviado) { S.nombre = d.nombre; return vistaEnviado(); }
+    S.token = d.token; guardar(); aplicar(d.estado);
+  } catch (er) { ui.busy = false; ui.error = er.message; vistaAcceso(); }
+}
+
+/* ---------- Examen ---------- */
+function aplicar(estado) {
+  const prevNivel = S.estado && S.estado.pregunta ? S.estado.pregunta.nivel : null;
+  S.estado = estado; S.nombre = estado.nombre; S.offset = estado.ahora - Date.now();
+  if (!estado.pregunta) return vistaEnviado();
+  if (prevNivel && estado.pregunta.nivel !== prevNivel) toast(`Nivel ${prevNivel} completado. Nivel ${estado.pregunta.nivel} desbloqueado.`);
+  if (!S.estado.pregunta || ui.qid !== estado.pregunta.id) { ui.sel = null; ui.confirm = null; ui.qid = estado.pregunta.id; }
+  vistaExamen();
+}
+
+function vistaExamen() {
+  const E = S.estado, q = E.pregunta;
+  const nodes = E.niveles.map((n, i) => {
+    const st = n.respondidas === n.total ? "done" : i + 1 === q.nivel ? "now" : "lock";
+    return `<div class="node ${st}"><span class="n">NIVEL ${i + 1}</span><span class="t">${ex(n.titulo)}</span><div class="bar"><i style="width:${Math.round(n.respondidas / n.total * 100)}%"></i></div></div>`;
+  }).join("");
+  const usadas = q.pistas.length;
+  const opciones = q.tipo === "mc"
+    ? `<div class="opts" role="radiogroup">${q.opciones.map((o, i) => `<label class="opt ${ui.sel === i ? "sel" : ""}"><input type="radio" name="op" value="${i}" ${ui.sel === i ? "checked" : ""}><span>${ex(o)}</span></label>`).join("")}</div>`
+    : `<div class="field numin"><label for="num">Tu respuesta (número entero)</label><input id="num" inputmode="numeric" autocomplete="off" value="${ui.sel !== null ? esc(ui.sel) : ""}"></div>`;
+  const pistaBtn = usadas < q.pistasDisponibles
+    ? (ui.confirm === "pista"
+      ? `<div class="confirm">¿Ver la pista ${usadas + 1}? Esta pregunta valdrá como máximo ${q.pts - usadas - 1} punto(s).<div class="actions" style="margin-top:10px"><button class="btn ghost" type="button" id="pSi">Sí, ver pista</button><button class="btn ghost" type="button" id="pNo" style="color:var(--muted);border-color:var(--line)">Cancelar</button></div></div>`
+      : `<button class="btn ghost" type="button" id="bPista">Ver pista ${usadas + 1} de ${q.pistasDisponibles} (−1 punto)</button>`)
+    : "";
+  $("app").innerHTML = `
+  <header class="top"><div class="wrap">
+    <div class="who"><b>${esc(E.nombre)}</b><span>${esc(E.matricula)}</span></div>
+    <div class="spacer"></div>
+    <div class="who" style="text-align:right"><span>Tiempo restante</span><b class="timer" id="timer">--:--</b></div>
+  </div></header>
+  <main class="wrap">
+    <nav class="map" aria-label="Niveles">${nodes}</nav>
+    <article class="card">
+      <div class="qhead"><div class="eyebrow">Nivel ${q.nivel} · Pregunta ${q.numero} de ${q.total}</div><span class="pts">Vale ${q.pts} punto${q.pts > 1 ? "s" : ""}</span></div>
+      <p class="qtext">${ex(q.enunciado)}</p>
+      ${opciones}
+      <div class="hints">${q.pistas.map((h, i) => `<div class="hint"><b>Pista ${i + 1}:</b> ${ex(h)}</div>`).join("")}${pistaBtn ? `<div>${pistaBtn}</div>` : ""}</div>
+      ${ui.error ? `<div class="msg bad" style="margin-top:14px" role="alert">${esc(ui.error)}</div>` : ""}
+      ${ui.confirm === "enviar"
+        ? `<div class="confirm">¿Enviar esta respuesta? Después no podrás cambiarla.<div class="actions" style="margin-top:10px"><button class="btn" type="button" id="eSi" ${ui.busy ? "disabled" : ""}>Sí, enviar</button><button class="btn ghost" type="button" id="eNo">Revisar</button></div></div>`
+        : `<div class="actions"><button class="btn" type="button" id="bEnviar">Enviar respuesta</button></div>`}
+    </article>
+  </main>`;
+  document.querySelectorAll('input[name="op"]').forEach((r) => r.addEventListener("change", () => { ui.sel = +r.value; ui.error = ""; vistaExamen(); }));
+  const num = $("num"); if (num) { num.addEventListener("input", () => { ui.sel = num.value; }); }
+  if ($("bPista")) $("bPista").onclick = () => { ui.confirm = "pista"; vistaExamen(); };
+  if ($("pNo")) $("pNo").onclick = () => { ui.confirm = null; vistaExamen(); };
+  if ($("pSi")) $("pSi").onclick = () => accion("pista");
+  if ($("bEnviar")) $("bEnviar").onclick = () => {
+    if (q.tipo === "mc" && ui.sel === null) { ui.error = "Elige una opción antes de enviar."; return vistaExamen(); }
+    if (q.tipo === "num" && !/^\s*[-−]?\s*\d+\s*$/.test(String(ui.sel ?? ""))) { ui.error = "Escribe un número entero, por ejemplo 12 o −3."; return vistaExamen(); }
+    ui.error = ""; ui.confirm = "enviar"; vistaExamen();
+  };
+  if ($("eNo")) $("eNo").onclick = () => { ui.confirm = null; vistaExamen(); };
+  if ($("eSi")) $("eSi").onclick = () => accion("responder");
+  tick();
+}
+
+async function accion(tipo) {
+  const q = S.estado.pregunta; ui.busy = true; vistaExamen();
+  try {
+    const body = { accion: tipo, matricula: S.matricula, token: S.token, id: q.id };
+    if (tipo === "responder") body.respuesta = q.tipo === "mc" ? ui.sel : String(ui.sel).trim();
+    const d = await api(body);
+    ui.busy = false; ui.confirm = null;
+    if (d.enviado) return vistaEnviado();
+    aplicar(d.estado);
+  } catch (er) { ui.busy = false; ui.confirm = null; ui.error = er.message; vistaExamen(); }
+}
+
+function tick() {
+  clearTimeout(tick.t);
+  const el = $("timer"); if (!el || !S.estado) return;
+  const rest = S.estado.limite - (Date.now() + S.offset);
+  if (rest <= 0) { el.textContent = "00:00"; return reanudar(); }
+  const m = Math.floor(rest / 60000), s = Math.floor((rest % 60000) / 1000);
+  el.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  el.classList.toggle("low", rest < 5 * 60000);
+  tick.t = setTimeout(tick, 1000);
+}
+async function reanudar() { // pide el estado actual al servidor (por ejemplo, al terminar el tiempo)
+  try { const d = await api({ accion: "iniciar", matricula: S.matricula, codigo: S.codigo, token: S.token }); if (d.enviado) return vistaEnviado(); aplicar(d.estado); }
+  catch (er) { ui.error = er.message; vistaExamen(); }
+}
+
+function vistaEnviado() {
+  clearTimeout(tick.t);
+  try { localStorage.removeItem(SKEY); } catch (e) {}
+  $("app").innerHTML = `<div class="wrap"><section class="done card">
+    <div class="eyebrow">Misión final</div>
+    <div class="big">Examen enviado</div>
+    <p>Gracias, <b>${esc(S.nombre)}</b>. Tus respuestas quedaron registradas. El docente publicará las calificaciones.</p>
+    <p style="color:var(--muted);font-size:14px">Ya puedes cerrar esta ventana.</p>
+  </section></div>`;
+}
+
+/* ---------- Registro de salidas de la pestaña ---------- */
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "hidden" || !S.token || !S.estado || !S.estado.pregunta) return;
+  S.salidas++;
+  try { fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ accion: "evento", tipo: "salida", matricula: S.matricula, token: S.token }), keepalive: true }); } catch (e) {}
+  const w = $("warn"); w.textContent = `Saliste de la ventana del examen (${S.salidas}). Quedó registrado para el docente.`; w.hidden = false;
+  clearTimeout(w.t); w.t = setTimeout(() => (w.hidden = true), 6000);
+});
+
+vistaAcceso();
+</script>
+</body>
+</html>
