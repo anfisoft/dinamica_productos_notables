@@ -59,7 +59,7 @@ function nivel1() { // Caso I · Factor común
     let a, b, c; do { a = ri(1, 9); b = ri(1, 9); c = ri(1, 9); } while (gcd(gcd(a, b), c) !== 1);
     const t1 = X(v, k + 2, g * a), t2 = X(v, k + 1, -g * b), t3 = X(v, k, g * c);
     qs.push(num({ pts: 2, caso: "I",
-      enunciado: `Al factorizar completamente ${fP([t1, t2, t3])}, sacando el factor común máximo, dentro del paréntesis queda un trinomio A${v}² + B${v} + C. ¿Cuánto vale A + B + C? (Toma en cuenta los signos.)`,
+      enunciado: `Factoriza ${fP([t1, t2, t3])} sacando el factor común máximo. El resultado tendrá la forma (factor común)·(A${v}² + B${v} + C). ¿Cuánto vale A + B + C? (Toma en cuenta los signos.)`,
       pistas: [
         `El factor común máximo es ${fP([X(v, k, g)])}: ${g} es el MCD de ${g * a}, ${g * b} y ${g * c}, y ${fP([X(v, k)])} es la menor potencia de ${v} que aparece en los tres términos.`,
         `Divide cada término entre ${fP([X(v, k, g)])}. Por ejemplo, ${fP([t1])} ÷ ${fP([X(v, k, g)])} = ${fP([X(v, 2, a)])}. Haz lo mismo con los otros dos términos y suma los tres coeficientes con su signo.`,
